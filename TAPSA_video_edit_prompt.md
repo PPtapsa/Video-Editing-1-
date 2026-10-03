@@ -2,35 +2,39 @@
 
 > Paste everything below the line into **Claude Code (local, on the computer with Premiere Pro)**.
 > Set model to **Opus 5.5** and effort to **High** first (`/model`).
-> Make sure the **Premiere Pro connector** and **Higgsfield MCP** are both enabled (`/mcp` to check).
+> Make sure the **Premier Pro Higgsfield MCP** custom connector (`mcp.higgsfield.ai`) is enabled (`/mcp` to check) and Premiere Pro is open.
 
 ---
 
 You are the creative director, motion designer and editor for a premium product film for **TAPSA**, a stainless-steel floor drain brand. You have full creative freedom. I want something that looks like an Apple / Dyson / Grohe product film, not a basic slideshow. Surprise me, but every creative choice must make the product easier to understand and more desirable.
 
+## Hard rule: edit only, in Premiere Pro
+- **Edit only in Premiere Pro, through the Premier Pro Higgsfield MCP (`pr_*` tools).**
+- **No AI generation of any kind.** Do not generate videos, images, voice-overs or music, do not upscale with AI, and do not spend any Higgsfield credits.
+- Every shot in the film comes from **my raw footage**. All graphics (headlines, callouts, lines, the AquaLock diagram, the logo end card) are built **inside Premiere** with titles, shapes, masks, keyframes and effects.
+- If the story needs a shot that isn't in the footage, solve it creatively with what's there: punch-ins, reframes, speed ramps, freeze frames, split screens, or a graphic built in Premiere. Then list the missing shot in `notes.md` so I can film it later.
+
 ## Inputs
 - **Source video (raw footage):** https://drive.google.com/file/d/17XpGf6JWdBAqMYVNT7qD016x-IwqSHS0/view?usp=sharing
   - Download it locally first (e.g. `pip install gdown && gdown 17XpGf6JWdBAqMYVNT7qD016x-IwqSHS0 -O tapsa_raw.mp4`). If the download fails, stop and ask me to download it and give you the path.
-- **Tools you have:**
-  - **Premier Pro Higgsfield MCP** (`pr_*` tools) builds the actual edit in Premiere Pro. **Before your first edit, call `get_host_status` to confirm Premiere is connected, then load `pr_get_skill` and follow it.** Useful tools: `pr_import_media`, `pr_create_sequence`, `pr_assemble_edit` / `pr_apply_cut_plan`, `pr_set_clip_speed` (speed ramps), `pr_set_clip_transform` + `pr_add_keyframe` (push-ins, reframing), `pr_add_transition`, `pr_color_correct`, `pr_import_mogrt` + `pr_set_mogrt_text` (titles), `pr_add_music_bed`, `pr_detect_beats`, `pr_duck_music`, `pr_export_sequence_frame` (checking frames), `pr_export_sequence`.
-  - **After Effects** (`ae_*` tools, same MCP), if I have it open: use it for the premium motion graphics: callout lines, kinetic headlines (`ae_create_text_animator`), the logo reveal (`ae_create_logo_reveal`), and the AquaLock cutaway graphic. Load `ae_get_skill` first. If `get_host_status` says AE isn't connected, do the graphics in Premiere instead, or ask me to open AE.
-  - **Higgsfield MCP**: generate missing shots (macro steel close-ups, water-flow shots, sectional/cutaway AquaLock animation, hero reveals), upscale weak footage, and run scene analysis on the raw video.
-  - Shell and code (ffmpeg, Python, etc.) for anything the connectors can't do.
+- **The connector:**
+  - Before your first edit, call `get_host_status` to confirm Premiere Pro is connected, then load `pr_get_skill` and follow it.
+  - Useful tools: `pr_import_media`, `pr_probe_media`, `pr_extract_frames`, `pr_create_bin`, `pr_create_sequence`, `pr_assemble_edit` / `pr_apply_cut_plan`, `pr_split_clip`, `pr_trim_clip`, `pr_set_clip_speed` (speed ramps), `pr_set_clip_transform` + `pr_add_keyframe` + `pr_set_keyframe_interpolation` (push-ins, reframing, eased motion), `pr_add_transition`, `pr_apply_effect` + `pr_set_effect_property`, `pr_color_correct`, `pr_import_mogrt` + `pr_set_mogrt_text` (titles), `pr_detect_beats`, `pr_add_music_bed`, `pr_duck_music`, `pr_add_audio_fade`, `pr_set_sequence_format` (9:16 / 1:1 versions), `pr_export_sequence_frame` (checking frames), `pr_export_sequence`, `pr_save_project`.
+  - Shell (ffmpeg, Python) only for downloading, inspecting and checking files. **Never for the edit itself.**
 
 ## Step 1: Understand the footage before touching anything
-1. Run Higgsfield `video_analysis` on the raw video (or extract frames with ffmpeg every 1–2 s and look at them).
+1. Import the video and run `pr_probe_media` to get its resolution, frame rate and length. Then use `pr_extract_frames` (one frame every 1–2 s) and look at every frame.
 2. Write a **shot log**: timecode, what's in frame, quality (sharp / soft / shaky / badly lit), and what it's useful for.
-3. List what's **missing** to tell the story well (e.g. no clean macro of the rim, no water-seal cutaway, no water flow) and what Higgsfield should generate to fill those gaps.
+3. Note what's **missing** from the footage and how you'll cover it in Premiere (see the hard rule above).
 
 ## Step 2: Creative plan (show me, then go)
 Write a short treatment and save it as `plan.md`:
 - Concept and mood in 2–3 lines
-- Shot-by-shot storyboard with timings
-- Music direction and sound design
-- Which shots are real footage and which are AI-generated
-- **Estimated Higgsfield credit cost.** I have about **75 credits**. Use `get_cost` to preflight. Stay under budget and spend most of it on the shots that matter most (the AquaLock cutaway and the hero reveal).
+- Shot-by-shot storyboard with timings, and which source timecode each shot comes from
+- The graphics you'll build in Premiere (style, positions, animation)
+- Music and sound direction (you can't generate music, so say what kind of track I should drop in, or use any audio I provide)
 
-Show me the plan, then continue without waiting unless something costs more than 25 credits in one go or needs a decision only I can make.
+Show me the plan, then continue without waiting unless a decision is genuinely mine to make.
 
 ## The product (only facts you may claim)
 - Tile / marble **insert** floor drain: the top takes a piece of the same tile or marble, so the drain disappears into the floor.
@@ -49,7 +53,9 @@ Build the film around three benefits. Land each one before moving to the next:
 3. **Built to last:** SS304 steel, certificate, easy to lift out and clean.
 4. **Close:** TAPSA logo and tagline.
 
-A suggested order (you may change it if you have a stronger idea): hero reveal of the installed floor → rim detail → water draining → push into the outlet → sectional AquaLock animation → steel components and certificate → lift, remove, clean → logo.
+A suggested order (you may change it if you have a stronger idea): hero reveal of the installed floor → rim detail → water draining → push into the outlet → AquaLock explanation → steel components and certificate → lift, remove, clean → logo.
+
+**AquaLock explanation:** if the footage has no cutaway, build a clean, simple diagram in Premiere over a frozen or slowed frame of the outlet. Use shapes and masks: a steel-grey trap outline, an aqua water layer that rises and holds, and an arrow showing the drain path. Keep it in the same orientation as the real outlet so the cut makes sense.
 
 ## Raw reference copy (rewrite freely, keep the facts exact)
 Use this as a starting point only. Make it sharper, shorter and more premium if you can:
@@ -68,26 +74,27 @@ Use this as a starting point only. Make it sharper, shorter and more premium if 
 - **One idea per shot:** one main subject and one headline. Put each callout right next to the part it describes: the 2 mm label by the rim, the water-seal text by the trap, the SS304 text by the steel body.
 - **Readable on a phone with sound off.** Large headline, smaller explanation, specs smallest. Hold each line long enough to read it twice.
 - **Brand colours:** charcoal, porcelain white, aqua. Use aqua for water and the water seal and keep it consistent everywhere. One font family, same callout-line style, same text positions.
-- **Motion:** the product appears first and the text follows it. Steel moves slowly and with weight. Water moves fluidly. No cheap template transitions; every transition should lead to the next question a buyer would ask (e.g. push into the outlet, which leads to the cutaway).
-- **Continuity:** keep the outlet facing the same way when cutting from the full drain to the cutaway, so viewers know where the close-up comes from.
+- **Motion:** the product appears first and the text follows it. Slow, eased push-ins on steel give it weight; speed ramps on water make it feel fluid. No cheap template transitions; every transition should lead to the next question a buyer would ask (e.g. push into the outlet, which leads to the AquaLock explanation).
+- **Continuity:** keep the outlet facing the same way when cutting from the full drain to the close-up or diagram, so viewers know where the close-up comes from.
 - **Leave negative space** for text. Don't cover the rim, the water-entry gap or the trap while they're being explained.
-- **Sound:** premium minimal music bed, subtle water and metal sounds on the demonstrations. Voice-over is optional; if you add one, write the script and generate it with Higgsfield, and keep it calm and confident.
-- **Color grade:** clean, cool, high-end. Steel should look like real steel (no orange cast), and the marble should look bright and expensive.
+- **Sound:** keep the real water and metal sounds from the footage where they help, cleaned up and subtle, with music underneath if I provide a track. No AI voice-over.
+- **Color grade (Lumetri via `pr_color_correct`):** clean, cool, high-end. Steel should look like real steel (no orange cast), and the marble should look bright and expensive. Match every shot so the film looks like one shoot.
 
 ## Deliverables
 Save to an `exports/` folder:
-1. `TAPSA_master_16x9.mp4`: 1920×1080 or 4K, 30–60 s
-2. `TAPSA_reel_9x16.mp4`: 1080×1920, 15–30 s, reframed (not just cropped) for Reels / Shorts, with text re-laid out for vertical
+1. `TAPSA_master_16x9.mp4`: 1920×1080 (or 4K if the source is 4K), 30–60 s
+2. `TAPSA_reel_9x16.mp4`: 1080×1920, 15–30 s, reframed shot by shot (not just center-cropped), with the text re-laid out for vertical
 3. `TAPSA_square_1x1.mp4` (optional): 1080×1080 for feed posts
-4. The Premiere project file, organised in bins (Raw, AI-Generated, Graphics, Audio, Music)
-5. `plan.md` (treatment + storyboard) and `notes.md` (what you did, AI shots used, credits spent, placeholders I need to fill)
+4. The Premiere project, saved, with bins: Raw, Selects, Graphics, Audio, Sequences
+5. `plan.md` (treatment + storyboard) and `notes.md` (what you did, shots I should film next time, placeholders I need to fill)
 
 Export settings: H.264, high bitrate, AAC 320 kbps audio, loudness around −14 LUFS.
 
 ## Before you say you're done
-- Export a frame from every scene and look at each one: text readable at phone size? Callout next to the right part? Nothing cut off in 9:16?
+- Use `pr_export_sequence_frame` on every scene and look at each frame: text readable at phone size? Callout next to the right part? Nothing cut off in 9:16?
 - Watch the whole film once with sound off: is every benefit still clear?
 - Check every claim on screen against the product facts above. Remove anything that isn't listed.
-- Report back: links to the exports, total length, credits spent, and anything you'd improve with more footage or budget.
+- Confirm you used **zero** AI generation and **zero** Higgsfield credits.
+- Report back: paths to the exports, total length, and anything you'd improve with more footage.
 
 Go all out.
