@@ -15,8 +15,12 @@ You are the creative director, motion designer and editor for a premium product 
 - If the story needs a shot that isn't in the footage, solve it creatively with what's there: punch-ins, reframes, speed ramps, freeze frames, split screens, or a graphic built in Premiere. Then list the missing shot in `notes.md` so I can film it later.
 
 ## Inputs
-- **Source video (raw footage):** https://drive.google.com/file/d/17XpGf6JWdBAqMYVNT7qD016x-IwqSHS0/view?usp=sharing
-  - Download it locally first (e.g. `pip install gdown && gdown 17XpGf6JWdBAqMYVNT7qD016x-IwqSHS0 -O tapsa_raw.mp4`). If the download fails, stop and ask me to download it and give you the path.
+- **Source video (raw footage, already on this PC):**
+  `D:\E-commerce\Listing-Image\1 Raw\Drain\Tile Insert Ind\Video\archive\good.mp4`
+  - Import it straight into Premiere with `pr_import_media`. Do not move, rename, re-encode or overwrite the original file.
+  - If Premiere can't find it, stop and ask me. Don't guess another path.
+- **Premiere project:** a Premiere project is already open (`Untitled.prproj`). Save it as `TAPSA_Drain.prproj` in `D:\E-commerce\Listing-Image\1 Raw\Drain\Tile Insert Ind\Video\` before you start, and save again after every major step.
+- **Exports folder:** `D:\E-commerce\Listing-Image\1 Raw\Drain\Tile Insert Ind\Video\exports\` (create it if it doesn't exist). Put `plan.md` and `notes.md` in the `Video` folder as well.
 - **The connector:**
   - Before your first edit, call `get_host_status` to confirm Premiere Pro is connected, then load `pr_get_skill` and follow it.
   - Useful tools: `pr_import_media`, `pr_probe_media`, `pr_extract_frames`, `pr_create_bin`, `pr_create_sequence`, `pr_assemble_edit` / `pr_apply_cut_plan`, `pr_split_clip`, `pr_trim_clip`, `pr_set_clip_speed` (speed ramps), `pr_set_clip_transform` + `pr_add_keyframe` + `pr_set_keyframe_interpolation` (push-ins, reframing, eased motion), `pr_add_transition`, `pr_apply_effect` + `pr_set_effect_property`, `pr_color_correct`, `pr_import_mogrt` + `pr_set_mogrt_text` (titles), `pr_detect_beats`, `pr_add_music_bed`, `pr_duck_music`, `pr_add_audio_fade`, `pr_set_sequence_format` (9:16 / 1:1 versions), `pr_export_sequence_frame` (checking frames), `pr_export_sequence`, `pr_save_project`.
@@ -81,11 +85,11 @@ Use this as a starting point only. Make it sharper, shorter and more premium if 
 - **Color grade (Lumetri via `pr_color_correct`):** clean, cool, high-end. Steel should look like real steel (no orange cast), and the marble should look bright and expensive. Match every shot so the film looks like one shoot.
 
 ## Deliverables
-Save to an `exports/` folder:
+Save to the exports folder above:
 1. `TAPSA_master_16x9.mp4`: 1920×1080 (or 4K if the source is 4K), 30–60 s
 2. `TAPSA_reel_9x16.mp4`: 1080×1920, 15–30 s, reframed shot by shot (not just center-cropped), with the text re-laid out for vertical
 3. `TAPSA_square_1x1.mp4` (optional): 1080×1080 for feed posts
-4. The Premiere project, saved, with bins: Raw, Selects, Graphics, Audio, Sequences
+4. The Premiere project `TAPSA_Drain.prproj`, saved, with bins: Raw, Selects, Graphics, Audio, Sequences
 5. `plan.md` (treatment + storyboard) and `notes.md` (what you did, shots I should film next time, placeholders I need to fill)
 
 Export settings: H.264, high bitrate, AAC 320 kbps audio, loudness around −14 LUFS.
