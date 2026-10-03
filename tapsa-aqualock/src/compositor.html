@@ -1,0 +1,364 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tapsa AquaLock compositor</title>
+<style>
+  @font-face { font-family: 'Jost'; src: url('../assets/fonts/Jost-var-latin.woff2') format('woff2'); font-weight: 100 900; }
+  :root {
+    --ivory: #F4EFE8; --char: #231F1F; --deep: #137094; --aqua: #13A3D7; --gold: #D0A65B;
+  }
+  html, body { margin: 0; padding: 0; background: #000; }
+  #stage { position: relative; overflow: hidden; background: #000; font-family: 'Jost', sans-serif; }
+  .layer { position: absolute; inset: 0; overflow: hidden; }
+  .plate { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; will-change: transform; }
+  .plate img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .abs { position: absolute; }
+  .mask { overflow: hidden; }
+  .head { font-weight: 600; color: var(--char); letter-spacing: 0.015em; line-height: 1; white-space: nowrap; }
+  .head .in { display: inline-block; will-change: transform; }
+  .sub { font-weight: 550; color: #0E5E7E; letter-spacing: 0.32em; white-space: nowrap; text-transform: uppercase; }
+  .gline { height: 4px; background: #BE8F42; transform-origin: 0 50%; }
+  #vignette { background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, rgba(20,16,12,0.22) 100%); }
+  #flash { background: #FFF7EA; mix-blend-mode: screen; opacity: 0; }
+  #dark { background: #000; opacity: 0; }
+  #bloom { mix-blend-mode: screen; opacity: 0; }
+  .panel { background: rgba(26, 23, 23, 0.86); border-top: 3px solid var(--gold); box-sizing: border-box; }
+  .bullet { display: flex; align-items: center; gap: 18px; color: #F4EFE8; font-weight: 500; letter-spacing: 0.14em; white-space: nowrap; }
+  .tick { border-radius: 50%; border: 2px solid var(--aqua); display: grid; place-items: center; color: var(--aqua); font-weight: 700; box-sizing: border-box; }
+  .veil { background: var(--ivory); }
+  .endtitle { font-weight: 500; color: var(--char); letter-spacing: 0.16em; white-space: nowrap; }
+  .endfeat { font-weight: 400; color: var(--deep); letter-spacing: 0.06em; white-space: nowrap; }
+  svg { position: absolute; inset: 0; overflow: visible; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="plateA"><div class="plate"><img id="a0"><img id="a1"></div></div>
+  <div class="layer" id="plateB" style="display:none"><div class="plate"><div id="bAlign" style="position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0"><img id="b0" style="position:absolute;left:0;top:0;width:1920px;height:1080px"></div></div></div>
+  <div class="layer" id="bloom"></div>
+  <div class="layer" id="vignette"></div>
+  <div class="layer" id="dark"></div>
+  <div class="layer veil" id="veilA" style="opacity:0"></div>
+  <div class="layer veil" id="veilB" style="opacity:0"></div>
+  <svg id="fx" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+      <filter id="glowS" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+    </defs>
+    <g id="wipeEdge" style="display:none">
+      <line id="we1" stroke="#FFF3DC" stroke-width="26" filter="url(#glow)" opacity="0.85"/>
+      <line id="we2" stroke="#D0A65B" stroke-width="4"/>
+    </g>
+    <g id="callout" style="display:none">
+      <circle id="pinRing" fill="none" stroke="#13A3D7" stroke-width="3"/>
+      <circle id="pinGlow" fill="#13A3D7" filter="url(#glowS)"/>
+      <circle id="pinDot" fill="#FFFFFF"/>
+      <polyline id="lead" fill="none" stroke="#D0A65B" stroke-width="3" stroke-linejoin="round"/>
+    </g>
+  </svg>
+  <div class="layer" id="type"></div>
+  <div class="layer" id="flash"></div>
+</div>
+
+<script src="edit.js"></script>
+<script>
+const P = new URLSearchParams(location.search);
+const FMT = P.get('fmt') || 'wide';
+const W = FMT === 'square' ? 1080 : 1920, H = 1080;
+const stage = document.getElementById('stage');
+stage.style.width = W + 'px'; stage.style.height = H + 'px';
+const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const frameURL = n => `../build/src/f_${String(Math.max(0, Math.min(751, n))).padStart(4, '0')}.jpg`;
+const SQ = FMT === 'square';
+
+// ---------- layout system (per format) ----------
+const L = SQ ? {
+  x: 72, y: 84, head: 80, sub: 22, gap: 26, tcY: 80, logoW: 470,
+} : {
+  x: 118, y: 104, head: 98, sub: 27, gap: 30, tcY: 92, logoW: 560,
+};
+
+// ---------- camera ----------
+function segAt(t) { for (const s of SEGMENTS) if (t >= s.in && t < s.out) return s; return SEGMENTS[SEGMENTS.length - 1]; }
+function remap(s, t) {
+  const k = s.remap; if (!k) return s.freeze;
+  for (let i = 0; i < k.length - 1; i++) if (t <= k[i + 1][0]) return lerp(k[i][1], k[i + 1][1], (t - k[i][0]) / (k[i + 1][0] - k[i][0]));
+  return k[k.length - 1][1];
+}
+function camAt(s, t) {
+  const u = ease.inOutSine(prog(t, s.in, s.out));
+  const c = s.cam, z = lerp(c.z[0], c.z[1], u);
+  const ax = c.ax * 1920, ay = c.ay * 1080, sy = (c.wy != null ? c.wy : c.ay) * 1080;
+  let sx;
+  if (SQ) { const cx = lerp(c.cx[0], c.cx[1], u) * 1920; return { z, tx: 540 - cx * z, ty: sy - ay * z, map: (x, y) => [(x - cx) * z + 540, (y - ay) * z + sy] }; }
+  sx = c.wx ? lerp(c.wx[0], c.wx[1], u) * 1920 : ax;
+  return { z, tx: sx - ax * z, ty: sy - ay * z, map: (x, y) => [(x - ax) * z + sx, (y - ay) * z + sy] };
+}
+
+// ---------- the line (diagonal along the drain) ----------
+function lineGeom(p) {
+  const a = LINE_ANGLE_CSS * Math.PI / 180, d = [Math.sin(a), -Math.cos(a)], n = [Math.cos(a), Math.sin(a)];
+  const Ln = Math.abs(W * Math.sin(a)) + Math.abs(H * Math.cos(a));
+  const P0 = [W / 2 + d[0] * (p - 0.5) * Ln, H / 2 + d[1] * (p - 0.5) * Ln];
+  return { x1: P0[0] - n[0] * 3000, y1: P0[1] - n[1] * 3000, x2: P0[0] + n[0] * 3000, y2: P0[1] + n[1] * 3000 };
+}
+function wipeMask(p, soft = 0.012) {
+  const a = (p * 100).toFixed(3), b = ((p + soft) * 100).toFixed(3);
+  return `linear-gradient(${LINE_ANGLE_CSS}deg, #000 0%, #000 ${a}%, transparent ${b}%)`;
+}
+function setEdge(p, vis) {
+  $('wipeEdge').style.display = vis ? '' : 'none'; if (!vis) return;
+  const g = lineGeom(p);
+  for (const id of ['we1', 'we2']) { const e = $(id); e.setAttribute('x1', g.x1); e.setAttribute('y1', g.y1); e.setAttribute('x2', g.x2); e.setAttribute('y2', g.y2); }
+}
+
+// ---------- typography builders ----------
+const type = $('type');
+function el(tag, cls, style, html) { const e = document.createElement(tag); if (cls) e.className = cls; Object.assign(e.style, style || {}); if (html != null) e.innerHTML = html; return e; }
+
+// masked rise in / lift out
+function riseIn(t, at, out, dur = 0.45, exitDur = 0.28) {
+  if (t < at) return 1.12;
+  if (t < at + dur) return 1.12 * (1 - ease.outExpo(prog(t, at, at + dur)));
+  if (t < out - exitDur) return 0;
+  return -1.12 * ease.inCubic(prog(t, out - exitDur, out));
+}
+
+function drawHead(t, c, line = 0) {
+  if (t < c.at || t > c.out) return null;
+  const size = L.head * (c.size || 1);
+  const wrap = el('div', 'abs mask', {});
+  const head = el('div', 'head', { fontSize: size + 'px', paddingBottom: '0.08em' });
+  const inner = el('span', 'in', { transform: `translateY(${riseIn(t, c.at, c.out) * 100}%)` }, c.text);
+  head.appendChild(inner); wrap.appendChild(head);
+  if (c.pos === 'tc') { wrap.style.left = '0'; wrap.style.width = W + 'px'; head.style.textAlign = 'center'; wrap.style.top = L.tcY + 'px'; }
+  else { wrap.style.left = L.x + 'px'; wrap.style.top = (L.y + line * size * 1.06) + 'px'; }
+  type.appendChild(wrap);
+  return { size, top: parseFloat(wrap.style.top) };
+}
+function drawUnderline(t, c, top, width) {
+  const p = ease.outExpo(prog(t, c.at + 0.12, c.at + 0.75));
+  const fade = 1 - prog(t, c.out - 0.25, c.out);
+  const g = el('div', 'abs gline', { left: L.x + 'px', top: top + 'px', width: width + 'px', transform: `scaleX(${p})`, opacity: fade });
+  type.appendChild(g);
+}
+function drawSub(t, c, text, top, at) {
+  const p = ease.outCubic(prog(t, at, at + 0.7));
+  const fade = 1 - prog(t, c.out - 0.25, c.out);
+  const s = el('div', 'abs sub', { left: L.x + 'px', top: top + 'px', fontSize: L.sub + 'px', opacity: p * fade, letterSpacing: lerp(0.55, 0.32, p) + 'em' }, text);
+  type.appendChild(s);
+}
+
+// ---------- the frame ----------
+let cur = { a0: -1, a1: -1, b0: -1 };
+async function setImg(id, n) { if (cur[id] === n) return; cur[id] = n; const im = $(id); im.src = frameURL(n); await im.decode(); }
+
+async function renderFrame(t) {
+  type.innerHTML = '';
+  const s = segAt(t);
+  const cam = camAt(s, t);
+  const plateA = document.querySelector('#plateA .plate');
+  plateA.style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.z})`;
+  plateA.style.filter = s.blur ? `blur(${s.blur * Math.sin(Math.PI * prog(t, s.in, s.out))}px)` : 'none';
+
+  // source frame (with blend between neighbours for slow-motion smoothness)
+  const st = remap(s, t), fpos = st * 30, n0 = Math.floor(fpos), fr = fpos - n0;
+  const jobs = [setImg('a0', n0)];
+  if (fr > 0.02 && !s.freeze) { jobs.push(setImg('a1', n0 + 1)); $('a1').style.opacity = fr; } else { $('a1').style.opacity = 0; }
+
+  // ---- S10: tile → steel transform ----
+  const pB = $('plateB');
+  if (s.id === 'S10') {
+    pB.style.display = '';
+    jobs.push(setImg('b0', Math.round(s.freezeB * 30)));
+    $('bAlign').style.transform = `translate(${STEEL_ALIGN.tx}px, ${STEEL_ALIGN.ty}px) scale(${STEEL_ALIGN.s})`;
+    pB.querySelector('.plate').style.transform = plateA.style.transform;
+    const wp = ease.inOut(prog(t, s.wipe[0], s.wipe[1]));
+    const m = wipeMask(lerp(-0.03, 1.03, wp));
+    pB.style.webkitMaskImage = m; pB.style.maskImage = m;
+    setEdge(lerp(-0.03, 1.03, wp), t > s.wipe[0] && t < s.wipe[1] + 0.05);
+  } else { pB.style.display = 'none'; setEdge(0, false); }
+
+  // ---- global fx ----
+  // flash on hook→story transition and on ignite
+  let flash = 0;
+  flash = Math.max(flash, 0.9 * (prog(t, 3.66, 3.75) * (1 - prog(t, 3.75, 3.98))));
+  flash = Math.max(flash, 0.35 * (prog(t, 13.05, 13.15) * (1 - prog(t, 13.15, 13.35))));
+  $('flash').style.opacity = flash;
+  // dive darkening
+  $('dark').style.opacity = s.id === 'S6' ? 0.55 * ease.inCubic(prog(t, 8.3, 8.75)) : (s.id === 'S7' ? 0.55 * (1 - prog(t, 8.75, 8.95)) : 0);
+  // vignette off on end card
+  $('vignette').style.opacity = t > 20.2 ? 1 - prog(t, 20.2, 20.8) : 1;
+
+  // ---- AquaLock bloom + callout ----
+  const bloom = $('bloom');
+  if (s.id === 'S7') {
+    const srcT = st;
+    const pinY = srcT < 11.0 ? lerp(0.66, 0.575, prog(srcT, 8.87, 11.0)) : lerp(0.575, 0.567, prog(srcT, 11.0, 11.8));
+    const cy = lerp(0.659, 0.567, prog(srcT, 8.87, 11.8));
+    const [bx, by] = cam.map(0.475 * 1920, cy * 1080);
+    const ign = prog(t, 9.33, 9.45) * (1 - 0.7 * prog(t, 9.45, 10.2));
+    bloom.style.opacity = ign;
+    bloom.style.background = `radial-gradient(circle at ${bx}px ${by}px, rgba(19,163,215,0.85) 0px, rgba(19,163,215,0.35) ${260 * cam.z}px, rgba(19,163,215,0) ${620 * cam.z}px)`;
+    drawAquaLock(t, cam, srcT, pinY);
+  } else { bloom.style.opacity = 0; $('callout').style.display = 'none'; }
+
+  // ---- end card veil ----
+  const vA = $('veilA'), vB = $('veilB');
+  if (t >= 19.85) {
+    const wp = ease.inOut(prog(t, 19.85, 20.25));
+    const m = wipeMask(lerp(-0.03, 1.03, wp), 0.02);
+    vA.style.webkitMaskImage = m; vA.style.maskImage = m;
+    vA.style.opacity = 1 - ease.inOutSine(prog(t, 20.30, 21.0));
+    vB.style.opacity = t >= 20.25 ? 1 : 0;
+    const VA = LINE_ANGLE_CSS + 90, ve = SQ ? 0.42 : 0.40;
+    const gB = SQ ? 'linear-gradient(180deg, #000 0%, #000 40%, rgba(0,0,0,0.55) 49%, transparent 62%)'
+                  : `linear-gradient(${VA}deg, #000 0%, #000 ${(ve - 0.06) * 100}%, rgba(0,0,0,0.55) ${ve * 100}%, transparent ${(ve + 0.07) * 100}%)`;
+    vB.style.webkitMaskImage = gB; vB.style.maskImage = gB;
+    if (t < 20.3) setEdge(lerp(-0.03, 1.03, wp), true);
+  } else { vA.style.opacity = 0; vB.style.opacity = 0; }
+
+  // ---- typography ----
+  for (const c of CUES) {
+    if (t < c.at - 0.001 || t > c.out) continue;
+    if (c.kind === 'head') {
+      const h = drawHead(t, c);
+      if (!h) continue;
+      if (c.pos !== 'tc') {
+        // YOUR FLOOR. / YOUR FINISH. stack: sub drops below line 2 when it arrives
+        const twoLine = c.subSwap && t >= c.subSwap.at;
+        const drop = c.subSwap ? ease.outExpo(prog(t, c.subSwap.at, c.subSwap.at + 0.5)) : 0;
+        const ulTop = h.top + h.size * 1.08 + L.gap * 0.4 + drop * h.size * 1.06;
+        drawUnderline(t, c, ulTop, SQ ? 140 : 180);
+        if (c.sub) {
+          const txt = twoLine ? c.subSwap.text : c.sub;
+          drawSub(t, c, txt, ulTop + L.gap, twoLine ? c.subSwap.at + 0.05 : c.at + 0.3);
+        }
+      }
+    } else if (c.kind === 'head2') {
+      drawHead(t, c, 1);
+    } else if (c.kind === 'brand') {
+      drawBrand(t, c);
+    } else if (c.kind === 'endcard') {
+      drawEnd(t, c);
+    }
+  }
+  for (const im of type.querySelectorAll('img')) jobs.push(im.decode().catch(() => {}));
+  await Promise.all(jobs);
+  return true;
+}
+
+function drawHair(t, angDeg, pos) {
+  // static gold hairline running parallel to the drain at the veil edge
+  const p = ease.outExpo(prog(t, 20.5, 21.4));
+  if (p <= 0) return;
+  const a = angDeg * Math.PI / 180, d = [Math.sin(a), -Math.cos(a)], n = [Math.cos(a), Math.sin(a)];
+  const Ln = Math.abs(W * Math.sin(a)) + Math.abs(H * Math.cos(a));
+  const c = [W / 2 + d[0] * (pos - 0.5) * Ln, H / 2 + d[1] * (pos - 0.5) * Ln];
+  const len = 2600 * p;
+  const hl = el('div', 'abs', { left: c[0] - len / 2 + 'px', top: c[1] - 1 + 'px', width: len + 'px', height: '2px', background: 'linear-gradient(90deg, rgba(208,166,91,0), #D0A65B 20%, #D0A65B 80%, rgba(208,166,91,0))', transform: `rotate(${Math.atan2(n[1], n[0]) * 180 / Math.PI}deg)`, transformOrigin: '50% 50%', opacity: 0.9 });
+  type.appendChild(hl);
+}
+
+function drawBrand(t, c) {
+  const p = ease.outExpo(prog(t, c.at, c.at + 0.6));
+  const fade = 1 - prog(t, c.out - 0.22, c.out);
+  const w = L.logoW, h = w * 846 / 2000;
+  const img = el('img', 'abs', { left: L.x - w * 0.02 + 'px', top: L.y - 18 + 'px', width: w + 'px', clipPath: `inset(0 ${(1 - p) * 100}% 0 0)`, opacity: fade, transform: `scale(${lerp(1.04, 1, p)})`, transformOrigin: '0 50%' });
+  img.src = '../assets/logos/tapsa_color.png'; type.appendChild(img);
+  const top = L.y - 18 + h + 18;
+  drawUnderline(t, { at: c.at + 0.15, out: c.out }, top, w * 0.96);
+  drawSub(t, c, c.sub, top + L.gap, c.at + 0.35);
+}
+
+function drawAquaLock(t, cam, srcT, pinY) {
+  const outP = ease.inCubic(prog(t, 12.70, 12.98));
+  // pin tracked to the right wall of the glowing trap
+  const [px, py] = cam.map(0.640 * 1920, pinY * 1080);
+  const g = $('callout'); g.style.display = t > 9.42 && t < 12.98 ? '' : 'none';
+  const pinIn = ease.outExpo(prog(t, 9.42, 9.8));
+  const pulse = (Math.max(0, t - 9.42) % 1.25) / 1.25;
+  $('pinDot').setAttribute('cx', px); $('pinDot').setAttribute('cy', py); $('pinDot').setAttribute('r', 7 * pinIn);
+  $('pinGlow').setAttribute('cx', px); $('pinGlow').setAttribute('cy', py); $('pinGlow').setAttribute('r', 14 * pinIn);
+  $('pinRing').setAttribute('cx', px); $('pinRing').setAttribute('cy', py); $('pinRing').setAttribute('r', 10 + 34 * ease.outCubic(pulse)); $('pinRing').setAttribute('opacity', (1 - pulse) * pinIn);
+  g.style.opacity = 1 - outP;
+
+  // panel geometry
+  let pnl, logoW;
+  if (SQ) { pnl = { x: 48, y: 760, w: 984, h: 272 }; logoW = 400; }
+  else { pnl = { x: 1290, y: 250, w: 540, h: 470 }; logoW = 440; }
+  const inP = ease.outExpo(prog(t, 9.45, 10.0));
+  const dx = SQ ? 0 : (1 - inP) * 90 + outP * 120, dy = SQ ? (1 - inP) * 60 + outP * 80 : 0;
+  const panel = el('div', 'abs panel', { left: pnl.x + dx + 'px', top: pnl.y + dy + 'px', width: pnl.w + 'px', height: pnl.h + 'px', opacity: inP * (1 - outP) });
+  type.appendChild(panel);
+
+  // leader line: pin → elbow → panel edge
+  let pts;
+  if (SQ) { const ex = px + 60, ey = pnl.y - 70; pts = [[px, py], [ex, ey], [ex, pnl.y + dy]]; }
+  else { const ey = pnl.y + 120, ex = px + Math.max(40, (py - ey) * 0.9); pts = [[px, py], [ex, ey], [pnl.x + dx, ey]]; }
+  const lead = $('lead');
+  lead.setAttribute('points', pts.map(p => p.join(',')).join(' '));
+  let len = 0; for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+  const lp = ease.outCubic(prog(t, 9.55, 10.0));
+  lead.setAttribute('stroke-dasharray', `${len} ${len}`); lead.setAttribute('stroke-dashoffset', len * (1 - lp));
+
+  // content
+  const lp2 = ease.outExpo(prog(t, 9.75, 10.35));
+  const lx = SQ ? pnl.x + 40 : pnl.x + 50, ly = SQ ? pnl.y + 44 : pnl.y + 62;
+  const logo = el('img', 'abs', { left: lx + dx + 'px', top: ly + dy + 'px', width: logoW + 'px', clipPath: `inset(0 ${(1 - lp2) * 100}% 0 0)`, opacity: 1 - outP });
+  logo.src = '../assets/logos/aqualock_dark.png'; type.appendChild(logo);
+  const bullets = ['BLOCKS SEWER ODOUR', 'KEEPS INSECTS OUT'];
+  bullets.forEach((b, i) => {
+    const at = 10.35 + i * 0.42;
+    const bp = ease.outExpo(prog(t, at, at + 0.5));
+    const fs = SQ ? 21 : 25, tk = SQ ? 36 : 42;
+    let bx, by;
+    if (SQ) { bx = pnl.x + 40 + i * 470; by = pnl.y + 190; }
+    else { bx = lx; by = ly + logoW * 358 / 1268 + 70 + i * 78; }
+    const row = el('div', 'abs bullet', { left: bx + dx + (1 - bp) * 30 + 'px', top: by + dy + 'px', fontSize: fs + 'px', opacity: bp * (1 - outP) });
+    const tick = el('div', 'tick', { width: tk + 'px', height: tk + 'px', fontSize: (tk * 0.5) + 'px' }, '✓');
+    row.appendChild(tick); row.appendChild(el('span', '', {}, b));
+    type.appendChild(row);
+  });
+  if (!SQ) {
+    const fp = ease.outCubic(prog(t, 11.3, 11.9));
+    const foot = el('div', 'abs sub', { left: lx + dx + 'px', top: pnl.y + pnl.h - 62 + 'px', fontSize: '18px', color: '#D0A65B', opacity: fp * (1 - outP), letterSpacing: '0.3em' }, 'ALWAYS HOLDS A WATER SEAL');
+    type.appendChild(foot);
+  }
+}
+
+function drawEnd(t, c) {
+  const base = 20.35;
+  const w = SQ ? 430 : 600, h = w * 846 / 2000;
+  const lx = SQ ? (W - w) / 2 : L.x, ly = SQ ? 58 : 118;
+  const p = ease.outExpo(prog(t, base, base + 0.8));
+  const img = el('img', 'abs', { left: lx + 'px', top: ly + 'px', width: w + 'px', clipPath: `inset(0 ${(1 - p) * 100}% 0 0)`, transform: `scale(${lerp(1.05, 1, p)})`, transformOrigin: SQ ? '50% 50%' : '0 50%' });
+  img.src = '../assets/logos/tapsa_color.png'; type.appendChild(img);
+  const lineTop = ly + h + (SQ ? 20 : 26), lw = SQ ? 260 : 560;
+  const gp = ease.outExpo(prog(t, base + 0.3, base + 1.1));
+  type.appendChild(el('div', 'abs gline', { left: (SQ ? (W - lw) / 2 : lx + 8) + 'px', top: lineTop + 'px', width: lw + 'px', transform: `scaleX(${gp})`, transformOrigin: SQ ? '50% 50%' : '0 50%' }));
+  const tp = ease.outCubic(prog(t, base + 0.55, base + 1.2));
+  const title = el('div', 'abs endtitle', { top: lineTop + (SQ ? 24 : 30) + (1 - tp) * 14 + 'px', fontSize: (SQ ? 24 : 30) + 'px', opacity: tp });
+  title.textContent = 'TILE-INSERT LINEAR SHOWER DRAIN';
+  if (SQ) { title.style.left = '0'; title.style.width = W + 'px'; title.style.textAlign = 'center'; } else title.style.left = lx + 8 + 'px';
+  type.appendChild(title);
+  const fp = ease.outCubic(prog(t, base + 0.8, base + 1.5));
+  const feat = el('div', 'abs endfeat', { top: lineTop + (SQ ? 64 : 86) + (1 - fp) * 12 + 'px', fontSize: (SQ ? 23 : 27) + 'px', fontWeight: 500, opacity: fp },
+    '2-in-1 Reversible Cover&nbsp;&nbsp;<span style="color:#BE8F42">·</span>&nbsp;&nbsp;Tile or Steel');
+  if (SQ) { feat.style.left = '0'; feat.style.width = W + 'px'; feat.style.textAlign = 'center'; } else feat.style.left = lx + 8 + 'px';
+  type.appendChild(feat);
+  const ap = ease.outCubic(prog(t, base + 1.1, base + 1.8));
+  const aw = SQ ? 300 : 380;
+  const al = el('img', 'abs', { left: (W - aw - (SQ ? 56 : 110)) + 'px', top: (H - aw * 358 / 1268 - (SQ ? 56 : 92)) + (1 - ap) * 16 + 'px', width: aw + 'px', opacity: ap });
+  al.src = '../assets/logos/aqualock_color.png'; type.appendChild(al);
+}
+
+window.renderFrame = renderFrame;
+window.ready = document.fonts.load('600 40px Jost').then(() => document.fonts.load('400 20px Jost')).then(() => document.fonts.load('500 20px Jost'));
+</script>
+</body>
+</html>

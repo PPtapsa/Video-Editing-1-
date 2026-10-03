@@ -1,0 +1,425 @@
+<title>The Line Edit Bible</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a film slate up top, then the cut as an EDL — timeline strip → storyboard → execution table → technique sheets. */
+:root {
+  --paper: #F4EFE8; --sheet: #FBF8F4; --ink: #231F1F; --muted: #6E6660; --rule: rgba(35,31,31,.14);
+  --gold: #B88737; --aqua: #0E5E7E; --cyan: #13A3D7; --act1: #C9A46A; --act2: #8FB3C2; --act3: #13A3D7; --act4: #231F1F;
+  --display: 'Jost', 'Futura', 'Century Gothic', sans-serif;
+  --body: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #171414; --sheet: #201C1B; --ink: #F1ECE6; --muted: #A69E97; --rule: rgba(241,236,230,.14);
+  --gold: #D6AE63; --aqua: #5BC2E8; --cyan: #3BB4E0; --act1: #C9A46A; --act2: #7FA6B6; --act3: #3BB4E0; --act4: #F1ECE6; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #171414; --sheet: #201C1B; --ink: #F1ECE6; --muted: #A69E97; --rule: rgba(241,236,230,.14);
+  --gold: #D6AE63; --aqua: #5BC2E8; --cyan: #3BB4E0; --act1: #C9A46A; --act2: #7FA6B6; --act3: #3BB4E0; --act4: #F1ECE6; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); padding-block: 40px 96px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: .01em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(40px, 7vw, 78px); line-height: .95; text-transform: uppercase; }
+h2 { font-size: clamp(22px, 3vw, 30px); text-transform: uppercase; margin-bottom: 18px; }
+h3 { font-size: 18px; text-transform: uppercase; letter-spacing: .04em; }
+p { margin: 0; max-width: 68ch; }
+.label { font: 500 11px/1.3 var(--display); letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+section { margin-top: 72px; }
+.rule { height: 3px; width: 72px; background: var(--gold); margin: 18px 0 22px; }
+a { color: var(--aqua); }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* slate */
+.slate { display: grid; grid-template-columns: 1fr auto; gap: 24px 40px; align-items: end; }
+.slate .meta { display: grid; grid-template-columns: repeat(3, auto); gap: 6px 28px; }
+.slate .meta div { display: flex; flex-direction: column; gap: 2px; }
+.slate .meta b { font: 500 15px var(--mono); }
+.lede { margin-top: 18px; font-size: 17px; color: var(--muted); }
+@media (max-width: 760px) { .slate { grid-template-columns: 1fr; } .slate .meta { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* player */
+.player { margin-top: 36px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.screen { position: relative; background: #000; border-radius: 4px; overflow: hidden; display: grid; place-items: center; }
+.screen video { width: 100%; display: block; max-height: 74vh; background: #000; }
+.screen.sq video { width: auto; max-width: 100%; aspect-ratio: 1 / 1; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg button { font: 500 12px var(--display); letter-spacing: .14em; text-transform: uppercase; border: 0; background: transparent; color: var(--muted); padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.now { font: 500 13px var(--mono); color: var(--muted); }
+
+/* timeline strip */
+.strip { position: relative; margin-top: 8px; }
+.bars { display: flex; height: 54px; gap: 2px; }
+.bar { position: relative; border: 0; padding: 0 6px; cursor: pointer; text-align: left; color: #fff; font: 600 11px var(--display); letter-spacing: .08em; overflow: hidden; white-space: nowrap; border-radius: 2px; }
+.bar[data-act="1"] { background: var(--act1); } .bar[data-act="2"] { background: var(--act2); }
+.bar[data-act="3"] { background: var(--act3); } .bar[data-act="4"] { background: var(--act4); color: var(--paper); }
+.bar span { position: absolute; left: 6px; bottom: 6px; }
+.bar.on { outline: 2px solid var(--gold); outline-offset: 1px; }
+.beats { position: relative; height: 18px; margin-top: 4px; }
+.beats i { position: absolute; top: 0; width: 1px; height: 6px; background: var(--muted); opacity: .55; }
+.beats i.bar1 { height: 12px; opacity: .9; }
+.beats em { position: absolute; top: 8px; font: 400 10px var(--mono); color: var(--muted); font-style: normal; transform: translateX(-50%); }
+.head { position: absolute; top: -4px; width: 2px; height: 62px; background: var(--gold); pointer-events: none; }
+.acts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; }
+.acts span { display: inline-flex; align-items: center; gap: 8px; font: 500 12px var(--display); letter-spacing: .14em; text-transform: uppercase; }
+.acts i { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
+
+/* concept */
+.two { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 40px; }
+@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.cuts { border-top: 1px solid var(--rule); }
+.cuts div { display: grid; grid-template-columns: minmax(0, 11ch) minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.cuts b { font: 600 13px var(--display); letter-spacing: .06em; text-transform: uppercase; }
+
+/* storyboard */
+.board { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px 18px; }
+.card { display: flex; flex-direction: column; gap: 8px; cursor: pointer; background: none; border: 0; padding: 0; text-align: left; color: inherit; font: inherit; }
+.card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 3px; display: block; background: var(--sheet); }
+.card .tc { display: flex; justify-content: space-between; gap: 8px; font: 500 12px var(--mono); color: var(--muted); }
+.card .ttl { font: 600 15px var(--display); text-transform: uppercase; letter-spacing: .04em; }
+.card .copy { font-size: 13px; color: var(--aqua); font-weight: 500; }
+.card:hover img { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* table */
+.tablebox { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); }
+table { border-collapse: collapse; min-width: 1680px; font-size: 13px; line-height: 1.5; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+th { font: 600 11px var(--display); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--sheet); }
+td:first-child { font: 600 14px var(--display); }
+td.tc { font: 500 12px var(--mono); white-space: nowrap; }
+td b { font-weight: 600; }
+tr:hover td { background: color-mix(in srgb, var(--gold) 7%, transparent); }
+.w-shot { width: 170px; } .w-edit { width: 120px; } .w-text { width: 210px; } .w-anim { width: 190px; } .w-meth { width: 220px; } .w-set { width: 190px; } .w-snd { width: 180px; } .w-why { width: 170px; }
+
+/* techniques */
+.tech { display: grid; gap: 12px; }
+details { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 0 20px; }
+summary { cursor: pointer; padding: 16px 0; font: 600 16px var(--display); text-transform: uppercase; letter-spacing: .05em; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+summary::after { content: '+'; font-family: var(--mono); color: var(--gold); }
+details[open] summary::after { content: '–'; }
+details ol, details ul { margin: 0 0 18px; padding-left: 20px; display: grid; gap: 6px; max-width: 80ch; }
+details p { margin-bottom: 14px; }
+.pp { display: inline-block; font: 600 10px var(--display); letter-spacing: .16em; padding: 2px 7px; border-radius: 2px; background: var(--ink); color: var(--paper); vertical-align: 1px; margin-right: 6px; }
+.ae { background: var(--aqua); color: #fff; }
+
+/* identity */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.sw { border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--sheet); }
+.sw i { display: block; height: 64px; }
+.sw div { padding: 10px 12px; display: grid; gap: 2px; font-size: 12px; }
+.sw b { font: 600 12px var(--display); letter-spacing: .1em; text-transform: uppercase; }
+.typespec { display: grid; gap: 14px; margin-top: 24px; }
+.typespec .h { font: 600 clamp(32px, 5vw, 54px)/1 var(--display); text-transform: uppercase; }
+.typespec .l { font: 500 14px var(--display); letter-spacing: .32em; text-transform: uppercase; color: var(--aqua); }
+
+/* sound + export */
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.box { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
+.box ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.kv { display: grid; grid-template-columns: minmax(0, 9ch) minmax(0, 1fr); gap: 4px 14px; font-size: 13px; }
+.kv span:nth-child(odd) { color: var(--muted); }
+.verify { border-left: 3px solid var(--gold); padding: 4px 0 4px 18px; display: grid; gap: 8px; }
+.verify li { max-width: 80ch; }
+footer { margin-top: 72px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--rule); padding-top: 18px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header class="slate">
+    <div>
+      <div class="label">Tapsa Luxury Bathing · AquaLock™ · Flipkart listing film</div>
+      <h1 style="margin-top:14px">The Line</h1>
+      <p class="lede">A 24-second cut built around one idea: the product is a line in the floor, so every graphic, wipe and transition travels along the drain's own axis.</p>
+    </div>
+    <div class="meta">
+      <div><span class="label">Length</span><b>24.0 s</b></div>
+      <div><span class="label">Rate</span><b>30 fps</b></div>
+      <div><span class="label">Tempo</span><b>96 BPM</b></div>
+      <div><span class="label">Master</span><b>1920×1080</b></div>
+      <div><span class="label">Square</span><b>1080×1080</b></div>
+      <div><span class="label">Loudness</span><b>−15 LUFS</b></div>
+    </div>
+  </header>
+
+  <div class="player">
+    <div class="screen" id="screen"><video id="vid" src="preview_16x9.mp4" controls playsinline preload="metadata" poster="t01.jpg"></video></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Format">
+        <button id="f169" aria-pressed="true">16:9 master</button>
+        <button id="f11" aria-pressed="false">1:1 square</button>
+      </div>
+      <span class="now" id="now">00:00:00:00 · S1 Hook — tile cover lifts</span>
+    </div>
+    <div class="strip" id="strip"><div class="bars" id="bars"></div><div class="beats" id="beats"></div><div class="head" id="head" style="left:0"></div></div>
+    <div class="acts">
+      <span><i style="background:var(--act1)"></i>Hook</span>
+      <span><i style="background:var(--act2)"></i>Invisible</span>
+      <span><i style="background:var(--act3)"></i>Engineered</span>
+      <span><i style="background:var(--act4)"></i>Yours + end card</span>
+    </div>
+  </div>
+
+  <section class="two">
+    <div>
+      <h2>The idea</h2>
+      <p>The drain is a line, so the film is built on one. A gold rule sits under every headline. A gold edge sweeps along the drain and turns the tile cover into steel. A gold leader points at the AquaLock trap. A diagonal ivory veil opens the end card. Every move follows the drain's 65° screen angle, which is what makes it feel designed rather than assembled.</p>
+      <div class="rule"></div>
+      <p><b>Story in four acts.</b> <i>Hook:</i> "Tile it. Or flaunt it." puts the reversible cover in the first 2.5 seconds. <i>Invisible:</i> "Water disappears. So does the drain." turns the original's static opening into the line that carries the film. <i>Engineered:</i> a speed ramp lands the cyan trap ignition on the downbeat and the AquaLock lockup takes the screen. <i>Yours:</i> one frame-matched sweep from tile to steel, the room, then the brand.</p>
+    </div>
+    <div>
+      <h3 style="margin-bottom:12px">What was cut</h3>
+      <div class="cuts">
+        <div><b>0:00–0:03</b><span>Static opening of the original. It now appears later, sped up, where the water disappearing is the point.</span></div>
+        <div><b>3:10–4:28</b><span>Soft-focus camera move. Out of focus for about 1.5 s. Removed.</span></div>
+        <div><b>Set-down</b><span>Replaced by a freeze-frame tile→steel transformation registered to within a few pixels.</span></div>
+        <div><b>Ending</b><span>The wide room no longer ends the film. It ends on the drain with brand, name and AquaLock.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Storyboard</h2>
+    <p class="label" style="margin-bottom:20px">Click a frame to jump the player to that shot</p>
+    <div class="board" id="board"></div>
+  </section>
+
+  <section>
+    <h2>Premiere Pro execution</h2>
+    <p style="margin-bottom:20px">Sequence 1920×1080, 30 fps. Source clips: right-click → <b>Set to Frame Size</b> first (Scale 150%); every Scale value below is absolute and already includes it. Anchor Point is in source pixels (1280×720), Position in sequence pixels. Record TC is the sequence; source TC is inside <span class="mono">good_Listing.mp4</span>.</p>
+    <div class="tablebox"><table id="edl">
+      <thead><tr><th>#</th><th>Record TC</th><th class="w-shot">Shot · source TC</th><th>Dur</th><th class="w-edit">Edit</th><th class="w-text">Text / graphics</th><th class="w-anim">Animation</th><th class="w-meth">Premiere Pro method</th><th class="w-set">Key settings</th><th class="w-snd">Sound / SFX</th><th class="w-why">Purpose</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Technique sheets</h2>
+    <div class="tech">
+      <details open>
+        <summary>Masked-rise headline (every headline)</summary>
+        <ol>
+          <li><span class="pp">PR</span>Essential Graphics → Text. <b>Futura PT Demi</b> (Adobe Fonts; Jost SemiBold is the free equivalent) 98 px, hook lines 132 px, All Caps, tracking 15, <span class="mono">#231F1F</span>. Top-left at x 118, y 104.</li>
+          <li>Nest the graphic. Add <b>Transform</b>, then <b>Crop below it</b>. Order matters: Transform moves the text, and Crop stays fixed as the mask.</li>
+          <li>Crop Bottom until the mask sits just under the descenders.</li>
+          <li>Transform Position Y: <b>+110 → 0 over 14 f</b> (Bezier, outgoing influence ≈ 90%). Out: <b>0 → −110 over 8 f</b>, ease-in. Untick "Use Composition's Shutter Angle", Shutter Angle 180.</li>
+          <li>Gold rule: 180×4 px rectangle <span class="mono">#BE8F42</span>, 10 px under the text, Crop Right 100 → 0% from cue +4 f to +22 f.</li>
+          <li>Label: Futura PT Medium 27 px, tracking 320, <span class="mono">#0E5E7E</span>. Opacity 0 → 100 over 21 f from cue +9 f, with Tracking 550 → 320 over the same frames.</li>
+        </ol>
+      </details>
+      <details>
+        <summary>Tile → steel transformation (shot 10)</summary>
+        <ol>
+          <li>Frame Hold the tile at source <span class="mono">14:21</span> (V1) and the steel at <span class="mono">20:24</span> (V2), 56 f each.</li>
+          <li>Register: V2 Blend Mode → <b>Difference</b>. Nudge V2 Scale <b>+5% relative</b> and Position <b>≈ −57, −27 px</b> until the floor goes black and only the drain differs. Back to Normal.</li>
+          <li>V2 → <b>Linear Wipe</b>, Feather 20. Set the angle so the edge sits square to the drain and runs from its lower-left end to its upper-right end (≈ 245°; use 65° if it runs backwards). Completion <b>100 → 0%</b> from <span class="mono">15:02</span> to <span class="mono">15:24</span>, ease in/out.</li>
+          <li>Gold edge: 4×2400 px rectangle <span class="mono">#D0A65B</span>, Rotation 65.3°. Glow copy: 26 px wide, <span class="mono">#FFF3DC</span>, Gaussian Blur 30, Screen, 85%. Keyframe both so they ride the wipe edge.</li>
+          <li>Nest V1 + V2 + edges. Scale the nest <b>155.3 → 162.8</b> across the shot so the frozen frames still move.</li>
+          <li><span class="pp ae">AE</span>Optional extra: CC Light Sweep across the steel as the wipe finishes. The Premiere version holds up without it.</li>
+        </ol>
+      </details>
+      <details>
+        <summary>Tracked AquaLock callout (shot 7)</summary>
+        <p>The source camera drifts about 60 px upward during the cutaway, so the pin has to follow the trap.</p>
+        <ul>
+          <li><span class="pp ae">AE</span>Dynamic Link the shot, Track Motion on the right wall of the glowing cup, apply to a Null, and parent the pin and the leader's start to it.</li>
+          <li><span class="pp">PR</span>Keyframe the pin's Position: <span class="mono">09:13 → 1179,721 · 10:20 → 1154,664 · 11:24 → 1127,613 · 13:00 → 1112,605</span>, Auto Bezier. Pulse ring: Scale 100 → 440%, Opacity 100 → 0 every 38 f.</li>
+          <li>Leader: a 3 px <span class="mono">#D0A65B</span> polyline, revealed with Crop Left 100 → 0 from 09:16 to 09:29.</li>
+          <li>Panel: 540×470 at x 1290, y 250, <span class="mono">#1A1717</span> at 86%, 3 px gold top edge. Slides in from +90 px (09:14–10:00). Inside: AquaLock dark lockup at 440 px, two ✓ bullets 12 f apart, and a gold footer at 11:09.</li>
+          <li>Ignition bloom: duplicate the shot, HSL Secondary key on cyan, Gaussian Blur 80, Screen. Opacity 0 → 100 at 09:13 → 30 by 10:06.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Speed ramps that hit the beat</summary>
+        <ul>
+          <li><b>Shot 2, the flip:</b> Time Remapping keyframes at 01:08 (src 16:20), 02:00 (src 17:04) and 02:15 (src 17:17) give 60% through the flip, then 86%. Frame Sampling: Optical Flow.</li>
+          <li><b>Shot 7, the ignition:</b> keyframes at 08:23 (src 07:24), <b>09:12 (src 08:22, the first cyan frame)</b> and 13:04 (src 12:17) give 149% then 102%. The trap lights exactly on the downbeat.</li>
+          <li><b>Shot 11, the room:</b> 74% with Optical Flow. Untick "Maintain Audio Pitch" on slowed clips so the production audio drops in pitch and gains weight.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Colour (Lumetri on one adjustment layer)</summary>
+        <ul>
+          <li>Basic: Temperature −6 · Contrast +8 · Highlights −6 · Shadows −4 · Whites +6 · Blacks −4 · Saturation 93.</li>
+          <li>RGB Curves: a gentle S (black output to about 1.5%, 22% → 19%, 80% → 83%, white to 99%).</li>
+          <li>Color Wheels: shadows a touch toward blue/cyan (≈ +3), highlights neutral. This turns yellow beige into ivory stone and keeps the steel silver.</li>
+          <li>Shot 7 only: HSL Secondary on cyan, Saturation +12, to match AquaLock <span class="mono">#13A3D7</span>.</li>
+          <li>Sharpen 25 (35 for 1:1) to hide the 720p → 1080p upscale. Vignette −0.22, off from 20:08. Optional Noise 2% for texture.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Transitions</summary>
+        <ul>
+          <li><b>Hook → act 2 flash</b> (03:20–03:29): <span class="mono">#FFF7EA</span> solid, Screen, 0 → 90 → 0%, hard cut underneath at 03:23.</li>
+          <li><b>Whip</b> (13:04–13:10): Directional Blur Length 0 → 40 → 0 plus a 2-frame warm flash at 35%.</li>
+          <li><b>Ivory veil</b> (19:26–20:08): <span class="mono">#F4EFE8</span> matte with Linear Wipe at the shot 10 angle, Feather 30. It then dissolves (20:09–21:00) into a gradient veil, solid over the top-left 40% and fading out parallel to the drain.</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <h2>Visual identity</h2>
+    <div class="swatches">
+      <div class="sw"><i style="background:#231F1F"></i><div><b>Charcoal</b><span class="mono">#231F1F</span><span>Headlines</span></div></div>
+      <div class="sw"><i style="background:#0E5E7E"></i><div><b>Deep aqua</b><span class="mono">#0E5E7E</span><span>Labels on stone</span></div></div>
+      <div class="sw"><i style="background:#13A3D7"></i><div><b>AquaLock</b><span class="mono">#13A3D7</span><span>Trap, ticks, pin</span></div></div>
+      <div class="sw"><i style="background:#BE8F42"></i><div><b>Gold rule</b><span class="mono">#BE8F42 / #D0A65B</span><span>The line</span></div></div>
+      <div class="sw"><i style="background:#F4EFE8"></i><div><b>Ivory</b><span class="mono">#F4EFE8</span><span>Veil, end card</span></div></div>
+    </div>
+    <div class="typespec">
+      <div class="h">So does the drain.</div>
+      <div class="l">Tile-insert design</div>
+      <p class="label">Futura PT Demi 98 px · tracking 15 &nbsp;/&nbsp; Futura PT Medium 27 px · tracking 320 · margins 118 / 104 px (16:9), 72 / 84 px (1:1)</p>
+    </div>
+  </section>
+
+  <section class="grid3">
+    <div class="box">
+      <h3>Score</h3>
+      <p>96 BPM, D major, minimal tech-luxury. Dark suspended drone and ticking clock under the hook. Kick enters on the 03:23 drop. Filter closes into the dive, then a reverse swell. Gmaj9 and a glass chime on the ignition. The groove lifts at the transform, A13sus pulls into the end, and it resolves to Dmaj9 on the logo.</p>
+      <p class="label">Stem: stem_music.wav</p>
+    </div>
+    <div class="box">
+      <h3>Sound design</h3>
+      <div class="kv">
+        <span class="mono">00:00</span><span>Sub hit + air</span>
+        <span class="mono">01:03</span><span>Flip swish</span>
+        <span class="mono">01:28</span><span>Steel shing</span>
+        <span class="mono">03:23</span><span>Riser → drop</span>
+        <span class="mono">08:02</span><span>Falling whoosh</span>
+        <span class="mono">09:12</span><span>Ignite: sub-drop + chime</span>
+        <span class="mono">12:29</span><span>Whip</span>
+        <span class="mono">15:02</span><span>Sweep + shimmer</span>
+        <span class="mono">20:12</span><span>Logo impact + chime</span>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Mix + export</h3>
+      <div class="kv">
+        <span>Music</span><span>Ducks −6 dB under SFX (Essential Sound)</span>
+        <span>Target</span><span>−14 LUFS · −1.0 dBTP (reference −15.3)</span>
+        <span>Video</span><span>H.264 High, VBR 2-pass 12 Mbps (max 16)</span>
+        <span>Audio</span><span>AAC 320 kbps, 48 kHz</span>
+        <span>1:1</span><span>Auto Reframe, then per-shot crop centres from the table</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Before it goes live</h2>
+    <ul class="verify">
+      <li>Confirm the benefit claims are true for this product: <b>Blocks sewer odour</b>, <b>Keeps insects out</b>, <b>Always holds a water seal</b>.</li>
+      <li>Confirm "Stainless steel" and, if you want it on the end card, the grade (SS304 / SS316) and the size options.</li>
+      <li>Check the product name: "Tile-Insert Linear Shower Drain".</li>
+      <li>Check Flipkart Seller Hub's current video specs (aspect ratios, length, file size) before upload. No prices, offers, phone numbers or URLs appear in the film.</li>
+    </ul>
+  </section>
+
+  <footer>Rendered reference: frames composited in Chromium from the graded source, score and sound design synthesized to picture, then muxed with ffmpeg. The Premiere values above come from the same edit file, so a rebuild in Premiere matches the render.</footer>
+</div>
+
+<script>
+const BPM = 96, BEAT = 60 / BPM, DUR = 24;
+const S = [
+  { n: 1, act: 1, in: 0.000, out: 1.250, tc: '00:00 – 01:08', src: '14:23 → 16:20', f: 38, name: 'Hook — tile cover lifts', copy: 'TILE IT.',
+    edit: 'Hard start on motion, no fade-in', text: '<b>"TILE IT."</b> top-left, 132 px, charcoal; gold rule', anim: 'Mask-rise in 00:03 (14 f, ease-out); rule 00:07–00:22; lift out 01:01–01:08',
+    meth: 'Speed <b>154%</b>. Scale keyframes. Type via Transform + Crop mask', set: 'Scale 159 → 171 · Anchor 538,396 · Pos 806,594', snd: 'Sub hit + air 00:00; ticking 1/8 clock; source clicks', why: 'Stops the scroll: motion from frame 1 and the USP in two words' },
+  { n: 2, act: 1, in: 1.250, out: 2.500, tc: '01:08 – 02:15', src: '16:20 → 17:17', f: 38, name: 'Hook — the flip', copy: 'OR FLAUNT IT.',
+    edit: 'Cut on the cover\'s upward motion', text: '<b>"OR FLAUNT IT."</b> same slot', anim: 'In 01:13, out 02:13',
+    meth: '<b>Time Remap</b> 01:08 (16:20) → 02:00 (17:04) → 02:15 (17:17) = 60% then 86%. Optical Flow', set: 'Scale 171 → 180 · Anchor 614,360 · Pos 922,540', snd: 'Flip swish 01:03; steel shing 01:28', why: 'Slow motion turns a fast flip into a reveal' },
+  { n: 3, act: 1, in: 2.500, out: 3.750, tc: '02:15 – 03:23', src: '18:00 → 19:17', f: 38, name: 'Steel glint + brand', copy: 'tapsa · 2-IN-1 REVERSIBLE COVER',
+    edit: 'Cut', text: '<b>Tapsa logo</b> 560 px top-left, rule, label <b>2-IN-1 REVERSIBLE COVER</b>', anim: 'Logo wipe L→R 02:19–03:07 (Crop Right 100→0) + Scale 104→100; out by 03:19',
+    meth: 'Speed <b>124%</b>. Logo PNG on V3', set: 'Scale 165 → 154.5 (pull-out) · Anchor 704,396 · Pos 1056,594', snd: 'Second, softer shing 02:19', why: 'Brand on screen inside 3 s, on the most premium frame' },
+  { n: 4, act: 2, in: 3.750, out: 6.250, tc: '03:23 – 06:08', src: '00:06 → 03:02', f: 75, name: 'Water disappears', copy: 'WATER DISAPPEARS. / SO DOES THE DRAIN.',
+    edit: 'White-gold flash cut', text: '<b>"WATER DISAPPEARS."</b> → <b>"SO DOES THE DRAIN."</b> + TILE-INSERT DESIGN', anim: '03:28–05:00, then 05:03–06:04',
+    meth: 'Speed <b>115%</b>', set: 'Scale 150 → 165 · Anchor 666,418 · Pos 998,626 · 1:1 crop 864→883', snd: '<b>Drop</b>: riser → sub hit 03:23; kick enters; source water', why: 'The copy plays on the image: the water vanishes, and so does the drain' },
+  { n: 5, act: 2, in: 6.250, out: 8.125, tc: '06:08 – 08:04', src: '05:03 → 07:08', f: 56, name: 'Full-length flow', copy: 'FLOWS THE FULL LENGTH.',
+    edit: 'Cut on beat', text: '<b>"FLOWS THE FULL LENGTH."</b> top-centre, 76 px', anim: 'In 06:13, out 07:29',
+    meth: 'Speed <b>115%</b>', set: 'Scale 153 → 165 · Anchor 640,446 · Pos 960,670', snd: 'Pluck arpeggio enters; water trickle', why: 'Performance: the full-length channel' },
+  { n: 6, act: 2, in: 8.125, out: 8.750, tc: '08:04 – 08:23', src: '07:08 → 07:24', f: 19, name: 'Dive into the channel', copy: '—',
+    edit: 'Cut', text: '—', anim: 'Black solid 0 → 55% (08:09–08:23), back to 0 by 08:28',
+    meth: 'Speed <b>88%</b>', set: 'Scale 165 → 187.5 · Anchor 640,324 · Pos 960,486', snd: 'Falling whoosh 08:02; filter closes; kick out; reverse swell', why: 'Tension and release: the camera falls into the product' },
+  { n: 7, act: 3, in: 8.750, out: 13.125, tc: '08:23 – 13:04', src: '07:24 → 12:17', f: 131, name: 'AquaLock — trap ignites', copy: 'AquaLock™ · BLOCKS SEWER ODOUR · KEEPS INSECTS OUT',
+    edit: 'Cut', text: 'Cyan bloom 09:10; tracked pin + gold leader; charcoal panel with <b>AquaLock™</b>; ✓ BLOCKS SEWER ODOUR; ✓ KEEPS INSECTS OUT; ALWAYS HOLDS A WATER SEAL', anim: 'Panel +90 px → 0 (09:14–10:00); logo wipe 09:23; bullets 10:11 / 10:23; exit 12:21–13:00',
+    meth: '<b>Time Remap</b> 08:23 (07:24) → <b>09:12 (08:22, ignition)</b> → 13:04 (12:17) = 149% then 102%', set: 'Scale 168 → 183 · Anchor 627,432 · <b>Pos X 860 → 760</b>, Y 648', snd: '<b>Ignite 09:12</b>: sub-drop + glass chime A5/E6; chime per bullet; groove returns', why: 'Engineering proof; the AquaLock sub-brand gets its own moment' },
+  { n: 8, act: 4, in: 13.125, out: 13.325, tc: '13:04 – 13:10', src: '12:17 → 13:00', f: 6, name: 'Whip up', copy: '—',
+    edit: 'Cut', text: '—', anim: 'Directional Blur 0 → 40 → 0',
+    meth: 'Speed <b>225%</b>', set: 'Scale 159 → 150 · Directional Blur 0°', snd: 'Whip whoosh 12:29', why: 'Energy reset, from inside the drain back to the floor' },
+  { n: 9, act: 4, in: 13.325, out: 15.000, tc: '13:10 – 15:00', src: '13:00 → 14:21', f: 50, name: 'Your floor', copy: 'YOUR FLOOR. · TILE INSERT',
+    edit: 'Cut', text: '<b>"YOUR FLOOR."</b> + TILE INSERT', anim: 'In 13:15',
+    meth: 'Speed <b>101%</b>', set: 'Scale 150 → 155.3 · Anchor 640,396 · Pos 960,594', snd: 'Cover clicks, low', why: 'Sets up the transformation' },
+  { n: 10, act: 4, in: 15.000, out: 16.875, tc: '15:00 – 16:27', src: 'Hold 14:21 + 20:24', f: 56, name: 'Tile → steel transformation', copy: 'YOUR FINISH. · STAINLESS STEEL',
+    edit: 'Frame Hold → wipe', text: 'Line 2 <b>"YOUR FINISH."</b> at 15:14; label drops and swaps to STAINLESS STEEL', anim: 'Gold edge sweeps along the drain 15:02–15:24',
+    meth: 'Matched freeze frames + Linear Wipe + gold edge (see technique sheet)', set: 'Steel: +5% scale, −57/−27 px. Nest Scale 155.3 → 162.8', snd: 'Riser + shimmer 15:02 → shing 15:24', why: 'The film\'s best moment: both finishes, one camera, one sweep' },
+  { n: 11, act: 4, in: 16.875, out: 20.250, tc: '16:27 – 20:08', src: '22:16 → 25:01', f: 101, name: 'Luxury, underfoot', copy: 'LUXURY, UNDERFOOT.',
+    edit: 'Cut on the camera move', text: '<b>"LUXURY, UNDERFOOT."</b> + SEAMLESS FLOORS · ZERO COMPROMISE', anim: 'In 17:24, out 19:24',
+    meth: 'Speed <b>74%</b>, Optical Flow', set: 'Scale 150 → 160.5 · Anchor 538,396 · Pos 806,594 · 1:1 crop 730→806', snd: 'Air release 16:26; A13sus pulls home', why: 'Aspiration: the drain disappears into a finished room' },
+  { n: 12, act: 4, in: 20.250, out: 24.000, tc: '20:08 – 24:00', src: 'Hold 21:20', f: 113, name: 'End card', copy: 'tapsa · TILE-INSERT LINEAR SHOWER DRAIN · AquaLock™',
+    edit: 'Ivory veil wipe along the drain axis 19:26–20:08', text: 'Tapsa logo 600 px · rule · TILE-INSERT LINEAR SHOWER DRAIN · 2-in-1 Reversible Cover · Tile or Steel · AquaLock™ bottom-right', anim: 'Logo 20:11 · rule 20:20 · title 20:27 · features 21:03 · AquaLock 21:14 · hold',
+    meth: 'Veil matte + gradient veil; graphics on V3–V4', set: 'Scale 169.5 → 177 · Anchor 794,360 · <b>Pos 1190,610</b>', snd: 'Veil whoosh 19:24; impact + chime D6/A6 20:12; fade 22:12–24:00', why: 'Ends on product and brand; no fade to black because the listing loops' },
+];
+
+const $ = id => document.getElementById(id);
+const vid = $('vid');
+const tc = t => { const f = Math.floor(t * 30 + 1e-6); return `00:00:${String(Math.floor(f / 30)).padStart(2, '0')}:${String(f % 30).padStart(2, '0')}`; };
+
+// timeline strip
+const bars = $('bars');
+S.forEach(s => {
+  const b = document.createElement('button');
+  b.className = 'bar'; b.dataset.act = s.act; b.style.flex = `${s.out - s.in} 0 0`;
+  b.title = `S${s.n} · ${s.name} · ${s.tc}`; b.setAttribute('aria-label', b.title);
+  b.innerHTML = `<span>${s.out - s.in > 0.9 ? 'S' + s.n : ''}</span>`;
+  b.onclick = () => seek(s.in + 0.02);
+  bars.appendChild(b);
+});
+const beats = $('beats');
+for (let i = 0, t = 0; t <= DUR + 1e-6; i++, t = i * BEAT) {
+  const x = document.createElement('i'); x.style.left = (t / DUR * 100) + '%'; if (i % 4 === 0) x.className = 'bar1'; beats.appendChild(x);
+}
+[0, 5, 10, 15, 20, 24].forEach(s => { const e = document.createElement('em'); e.textContent = s + 's'; e.style.left = (s / DUR * 100) + '%'; beats.appendChild(e); });
+
+// storyboard
+const board = $('board');
+S.forEach(s => {
+  const c = document.createElement('button'); c.className = 'card';
+  c.innerHTML = `<img src="t${String(s.n).padStart(2, '0')}.jpg" alt="Shot ${s.n}: ${s.name}" loading="lazy"><div class="tc"><span>S${s.n} · ${s.tc}</span><span>${s.f} f</span></div><div class="ttl">${s.name}</div><div class="copy">${s.copy}</div>`;
+  c.onclick = () => { seek(s.in + 0.02); $('screen').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+  board.appendChild(c);
+});
+
+// execution table
+const tb = document.querySelector('#edl tbody');
+S.forEach(s => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${s.n}</td><td class="tc">${s.tc}</td><td><b>${s.name}</b><br><span class="mono">${s.src}</span></td><td class="tc">${s.f} f</td><td>${s.edit}</td><td>${s.text}</td><td>${s.anim}</td><td>${s.meth}</td><td>${s.set}</td><td>${s.snd}</td><td>${s.why}</td>`;
+  tb.appendChild(tr);
+});
+
+// player sync
+function seek(t) { try { vid.currentTime = t; } catch (e) {} update(t); }
+function update(t) {
+  $('head').style.left = (t / DUR * 100) + '%';
+  const s = S.find(x => t >= x.in && t < x.out) || S[S.length - 1];
+  $('now').textContent = `${tc(t)} · S${s.n} ${s.name}`;
+  [...bars.children].forEach((b, i) => b.classList.toggle('on', S[i] === s));
+}
+vid.addEventListener('timeupdate', () => update(vid.currentTime));
+let raf; const loop = () => { update(vid.currentTime); raf = requestAnimationFrame(loop); };
+vid.addEventListener('play', () => { cancelAnimationFrame(raf); loop(); });
+vid.addEventListener('pause', () => cancelAnimationFrame(raf));
+function fmt(sq) {
+  const t = vid.currentTime || 0, playing = !vid.paused;
+  vid.src = sq ? 'preview_1x1.mp4' : 'preview_16x9.mp4';
+  $('screen').classList.toggle('sq', sq);
+  $('f169').setAttribute('aria-pressed', !sq); $('f11').setAttribute('aria-pressed', sq);
+  vid.addEventListener('loadedmetadata', () => { vid.currentTime = t; if (playing) vid.play().catch(() => {}); }, { once: true });
+}
+$('f169').onclick = () => fmt(false); $('f11').onclick = () => fmt(true);
+update(0);
+</script>
