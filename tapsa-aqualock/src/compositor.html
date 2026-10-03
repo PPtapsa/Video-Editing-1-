@@ -65,6 +65,12 @@
 <script>
 const P = new URLSearchParams(location.search);
 const FMT = P.get('fmt') || 'wide';
+// Source frame grid: build.sh extracts every source frame as f_%04d.jpg (f_0000 = 0.000 s).
+// Defaults match the original 720p/30 fps copy; the 1080p master good.mp4 is 24 fps / 601 frames.
+const SRC_FPS = parseFloat(P.get('sfps') || '30');
+const SRC_LAST = parseInt(P.get('sframes') || '752', 10) - 1;
+// alpha=1: graphics-only pass (no picture plates, transparent background) for the Premiere overlay track.
+const ALPHA = P.get('alpha') === '1';
 const W = FMT === 'square' ? 1080 : 1920, H = 1080;
 const stage = document.getElementById('stage');
 stage.style.width = W + 'px'; stage.style.height = H + 'px';
@@ -72,8 +78,13 @@ const $ = id => document.getElementById(id);
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const prog = (t, a, b) => clamp((t - a) / (b - a));
-const frameURL = n => `../build/src/f_${String(Math.max(0, Math.min(751, n))).padStart(4, '0')}.jpg`;
+const frameURL = n => `../build/src/f_${String(Math.max(0, Math.min(SRC_LAST, n))).padStart(4, '0')}.jpg`;
 const SQ = FMT === 'square';
+if (ALPHA) {
+  document.documentElement.style.background = 'transparent'; document.body.style.background = 'transparent';
+  stage.style.background = 'transparent';
+  for (const id of ['plateA', 'plateB']) $(id).style.visibility = 'hidden';
+}
 
 // ---------- layout system (per format) ----------
 const L = SQ ? {
@@ -155,7 +166,7 @@ function drawSub(t, c, text, top, at) {
 
 // ---------- the frame ----------
 let cur = { a0: -1, a1: -1, b0: -1 };
-async function setImg(id, n) { if (cur[id] === n) return; cur[id] = n; const im = $(id); im.src = frameURL(n); await im.decode(); }
+async function setImg(id, n) { if (ALPHA || cur[id] === n) return; cur[id] = n; const im = $(id); im.src = frameURL(n); await im.decode(); }
 
 async function renderFrame(t) {
   type.innerHTML = '';
@@ -166,7 +177,7 @@ async function renderFrame(t) {
   plateA.style.filter = s.blur ? `blur(${s.blur * Math.sin(Math.PI * prog(t, s.in, s.out))}px)` : 'none';
 
   // source frame (with blend between neighbours for slow-motion smoothness)
-  const st = remap(s, t), fpos = st * 30, n0 = Math.floor(fpos), fr = fpos - n0;
+  const st = remap(s, t), fpos = st * SRC_FPS, n0 = s.freeze ? Math.round(fpos) : Math.floor(fpos), fr = fpos - n0;
   const jobs = [setImg('a0', n0)];
   if (fr > 0.02 && !s.freeze) { jobs.push(setImg('a1', n0 + 1)); $('a1').style.opacity = fr; } else { $('a1').style.opacity = 0; }
 
@@ -174,7 +185,7 @@ async function renderFrame(t) {
   const pB = $('plateB');
   if (s.id === 'S10') {
     pB.style.display = '';
-    jobs.push(setImg('b0', Math.round(s.freezeB * 30)));
+    jobs.push(setImg('b0', Math.round(s.freezeB * SRC_FPS)));
     $('bAlign').style.transform = `translate(${STEEL_ALIGN.tx}px, ${STEEL_ALIGN.ty}px) scale(${STEEL_ALIGN.s})`;
     pB.querySelector('.plate').style.transform = plateA.style.transform;
     const wp = ease.inOut(prog(t, s.wipe[0], s.wipe[1]));
