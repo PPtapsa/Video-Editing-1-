@@ -22,48 +22,48 @@ Anti Cockroach Trap & Anti Smell | Stainless Steel 304 Linear Bathroom Jali | Re
 
 ## 3. Bullet points
 
-Format: `【HEADER】 body text`. Amazon shows bullets in plain text with no bold, so the capital letters and the 【】 brackets make the headers stand out.
+Format: `【𝐇𝐄𝐀𝐃𝐄𝐑】: body text`. Headers use Unicode Bold Serif. Search does not read bold letters as words, so every header keyword also appears as plain text in the bullet, title or highlights.
 
-**Bullet 1 (516 chars)**
-
-```
-【INVISIBLE TILE INSERT & 2-IN-1 REVERSIBLE COVER】 Set your own floor tile, marble or granite, 10 to 21 mm thick and cut to 585 x 85 mm, into the cover tray and this tile insert floor drain blends into the bathroom floor, leaving only a slim stainless steel line. For a modern metal look, flip the reversible 2-in-1 cover to show its brushed matte stainless steel surface. One shower drain channel, two distinctive looks, ideal for marble bathrooms, minimal modern interiors and renovations without changing the drain
-```
-
-**Bullet 2 (563 chars)**
+**Bullet 1 (492 chars, 510 if Amazon counts bold letters as 2)**
 
 ```
-【ANTI COCKROACH & ANTI SMELL WATER SEAL TRAP】 Water passes through the slotted strainer into the inner cup, flows beneath it and exits through the side openings, while a layer of water stays held in the bowl as a water seal. This retained seal helps block sewer gas smell, cockroaches and small insects from coming up through the drain pipe. There is no spring, hinge or moving flap to rust, jam or break, so the seal keeps working as long as it stays filled. In a guest or rarely used bathroom, pour in a mug of water every week or two to keep the seal topped up
+【𝐈𝐍𝐕𝐈𝐒𝐈𝐁𝐋𝐄 𝟐-𝐈𝐍-𝟏 𝐂𝐎𝐕𝐄𝐑】: Set your own floor tile, marble or granite, 10 to 21 mm thick and cut to 585 x 85 mm, into the cover tray and this tile insert floor drain blends into the bathroom floor, leaving only a slim stainless steel line. For a modern metal look, flip the reversible 2-in-1 cover to show its brushed matte stainless steel surface. One shower drain channel, two distinctive looks, ideal for marble bathrooms, minimal modern interiors and renovations without changing the drain
 ```
 
-**Bullet 3 (565 chars)**
+**Bullet 2 (546 chars, 568 if Amazon counts bold letters as 2)**
 
 ```
-【SS304 MATERIAL & MATTE FINISH】 The channel, reversible cover, strainer, inner bowl and outer trap body are all made from AISI 304 grade stainless steel (SS304), the grade widely used for kitchen and food processing equipment. Built from solid 1 mm thick sheet for a sturdy, rigid feel underfoot, 304 grade steel resists rust and corrosion in daily wet use far better than iron, plastic or lower grade 201 steel. Every edge is folded and deburred, with no sharp edges to cut hands while cleaning, and the premium matte finish helps hide water spots and fingerprints
+【𝐀𝐍𝐓𝐈 𝐂𝐎𝐂𝐊𝐑𝐎𝐀𝐂𝐇 𝐖𝐀𝐓𝐄𝐑 𝐒𝐄𝐀𝐋】: Water passes through the slotted strainer into the inner cup, flows beneath it and exits through the side openings, while a layer of water stays held in the bowl as a water seal. This retained seal helps block sewer gas smell, cockroaches and small insects from coming up through the drain pipe. There is no spring, hinge or moving flap to rust, jam or break, so the seal keeps working as long as it stays filled. In a guest or rarely used bathroom, pour in a mug of water every week or two to keep the seal topped up
 ```
 
-**Bullet 4 (539 chars)**
+**Bullet 3 (560 chars, 579 if Amazon counts bold letters as 2)**
 
 ```
-【SIDE HOLE OUTLET & EXACT SIZE】 The 75 mm outlet hole sits to the side, near one end of the channel base instead of the centre, and drains straight down into your pipe. Turn the channel to place the side hole on the left or right, directly over your existing drain pipe. Nominal size 24 x 4 inch, actual outer size 600 x 100 mm, insert area 585 x 85 mm for 10 to 21 mm tile, marble or granite, channel depth 32 mm and total height including trap 85 mm. Confirm outlet position and floor depth with your plumber before the floor bed is laid
+【𝐒𝐒𝟑𝟎𝟒 𝐌𝐀𝐓𝐄𝐑𝐈𝐀𝐋 & 𝐅𝐈𝐍𝐈𝐒𝐇】: The channel, reversible cover, strainer, inner bowl and outer trap body are all made from AISI 304 grade stainless steel (SS304), the grade widely used for kitchen and food processing equipment. Built from solid 1 mm thick sheet for a sturdy, rigid feel underfoot, 304 grade steel resists rust and corrosion in daily wet use far better than iron, plastic or lower grade 201 steel. Every edge is folded and deburred, with no sharp edges to cut hands while cleaning, and the premium matte finish helps hide water spots and fingerprints
 ```
 
-**Bullet 5 (524 chars)**
+**Bullet 4 (534 chars, 552 if Amazon counts bold letters as 2)**
 
 ```
-【EASY LIFT, RINSE & REFIT CLEANING】 Hair and soap residue collect in the removable slotted strainer instead of deep inside your pipe, helping prevent slow drainage and blockages. Lift the cover, take out the strainer and inner bowl, rinse them under running water and drop them back in place. Clean the stainless steel with mild soap and water only; avoid toilet acid, hydrochloric acid and harsh bleach, which can stain any steel. After cleaning, the trap refills with water so the anti smell seal is restored straight away
+【𝐒𝐈𝐃𝐄 𝐇𝐎𝐋𝐄 𝐎𝐔𝐓𝐋𝐄𝐓 & 𝐒𝐈𝐙𝐄】: The 75 mm outlet hole sits to the side, near one end of the channel base instead of the centre, and drains straight down into your pipe. Turn the channel to place the side hole on the left or right, directly over your existing drain pipe. Nominal size 24 x 4 inch, actual outer size 600 x 100 mm, insert area 585 x 85 mm for 10 to 21 mm tile, marble or granite, channel depth 32 mm and total height including trap 85 mm. Confirm outlet position and floor depth with your plumber before the floor bed is laid
 ```
 
-**Bullet 6 (446 chars)**
+**Bullet 5 (505 chars, 517 if Amazon counts bold letters as 2)**
 
 ```
-【IDEAL FOR BATHROOM, SHOWER & BALCONY】 Suits shower areas, walk-in showers, wet rooms, bathrooms, balconies and utility wash areas in new homes and renovations. A stylish upgrade from an ordinary visible bathroom jali when you want a clean, continuous tiled floor. For best results, lay the floor with a gentle slope towards the drain, keep cement and grout out of the outlet, and never grout the cover in place so it stays removable for cleaning
+【𝐄𝐀𝐒𝐘 𝐂𝐋𝐄𝐀𝐍𝐈𝐍𝐆】: Hair and soap residue collect in the removable slotted strainer instead of deep inside your pipe, helping prevent slow drainage and blockages. Lift the cover, take out the strainer and inner bowl, rinse them under running water and drop them back in place. Clean the stainless steel with mild soap and water only; avoid toilet acid, hydrochloric acid and harsh bleach, which can stain any steel. After cleaning, the trap refills with water so the anti smell seal is restored straight away
 ```
 
-**Bullet 7 (440 chars)**
+**Bullet 6 (427 chars, 442 if Amazon counts bold letters as 2)**
 
 ```
-【5-PIECE SET & LIFETIME WARRANTY】 You receive the drain channel, reversible 2-in-1 cover, slotted strainer, inner water seal bowl and outer AquaLock trap body, ready to install. Floor tile or marble for the insert is not included, so you can match it exactly to your own flooring. TAPSA backs the drain channel with a lifetime limited replacement warranty, subject to its written terms, for long term peace of mind from TAPSA Luxury Bathing
+【𝐀𝐏𝐏𝐋𝐈𝐂𝐀𝐓𝐈𝐎𝐍 𝐀𝐑𝐄𝐀】: Suits shower areas, walk-in showers, wet rooms, bathrooms, balconies and utility wash areas in new homes and renovations. A stylish upgrade from an ordinary visible bathroom jali when you want a clean, continuous tiled floor. For best results, lay the floor with a gentle slope towards the drain, keep cement and grout out of the outlet, and never grout the cover in place so it stays removable for cleaning
+```
+
+**Bullet 7 (432 chars, 449 if Amazon counts bold letters as 2)**
+
+```
+【𝟓-𝐏𝐈𝐄𝐂𝐄 𝐒𝐄𝐓 & 𝐖𝐀𝐑𝐑𝐀𝐍𝐓𝐘】: You receive the drain channel, reversible 2-in-1 cover, slotted strainer, inner water seal bowl and outer AquaLock trap body, ready to install. Floor tile or marble for the insert is not included, so you can match it exactly to your own flooring. TAPSA backs the drain channel with a lifetime limited replacement warranty, subject to its written terms, for long term peace of mind from TAPSA Luxury Bathing
 ```
 
 Optional, only with a test report on file. Add this to bullet 2: `Tested flow of 72 to 90 litres per minute.`
