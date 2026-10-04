@@ -5,35 +5,32 @@ Character counts were checked with a script (spaces included).
 
 ---
 
-## 1. Product title, v2 (72 / 75)
+## 1. Product title, v5 (73 / 75)
 
 ```
-Tapsa 24x4 Marble/Tile Insert Invisible Shower Floor Drain Channel SS304
+Tapsa Marble/Tile Insert Invisible Shower Floor Drain Channel 24x4, SS304
 ```
 
-Rebuilt from the reference `Tapsa 24x4" Marble/Tile Insert Invisible Shower Floor Drain Channel SS-304` (74):
-- The `"` inch mark is removed. Feeds and CSV files can strip or break on it, and it doesn't match buyers searching "inch".
-- `SS-304` becomes `SS304`, the form buyers type and the form used in the rest of the listing.
-- The brand spelling must match Brand Registry exactly ("Tapsa" or "TAPSA").
+- **Front-loaded:** the first 53 characters, which phones show in search results, read as one plain phrase: "Tapsa Marble/Tile Insert Invisible Shower Floor Drain".
+- **Size and grade at the end:** "24x4, SS304" is where buyers look to confirm the size and steel grade.
+- **Phrases it covers:** marble insert, tile insert, invisible floor drain, shower floor drain, floor drain channel, shower channel, 24x4, SS304.
+- **Brand:** the spelling must match Brand Registry exactly.
 
 ---
 
-## 2. Item Highlights, v4: search-term led (123 / 125)
+## 2. Item Highlights, v5 (119 / 125)
 
 ```
-Anti Cockroach Trap, Anti Smell Water Seal, Stainless Steel Bathroom Jali, Linear Hidden Granite Cover, 10-21mm, End Outlet
+Anti Cockroach & Anti Smell Water Seal Trap, Linear Stainless Steel Bathroom Jali, Reversible Cover for 10-21mm Granite
 ```
 
-Built from buyer search phrases on Amazon.in, with no word repeated from the title:
-- anti cockroach trap
-- anti smell / water seal
-- stainless steel jali / bathroom jali
-- linear drain
-- hidden / granite cover
-- 21mm
-- end outlet
+Three readable phrases, each a block of search terms, with no word repeated from the title:
+1. **Anti Cockroach & Anti Smell Water Seal Trap:** matches anti cockroach, anti smell, water seal trap.
+2. **Linear Stainless Steel Bathroom Jali:** matches linear drain, stainless steel jali, bathroom jali.
+3. **Reversible Cover for 10-21mm Granite:** matches reversible cover, granite insert, 21mm.
 
-`odour`, `reversible` and `matte` moved to the backend search terms. Image 2 must show the 10 to 21 mm insert range, not "20 MM TRAY DEPTH".
+`hidden`, `end outlet`, `odour` and `matte` are in the backend terms; the end outlet is also explained in bullet 4.
+Image 2 must show the 10 to 21 mm insert range, not "20 MM TRAY DEPTH".
 
 ---
 
@@ -134,10 +131,10 @@ TAPSA Luxury Bathing. Where perfection begins.
 
 ---
 
-## 6. Backend search terms, v4 (213 / 250 bytes)
+## 6. Backend search terms, v5 (220 / 250 bytes)
 
 ```
-inch concealed seamless jaali nahani nali insect odour odor reversible matte kota stone 12mm 13mm slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
+inch hidden concealed seamless jaali nahani nali insect odour odor matte end outlet kota stone 12mm 13mm slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
 ```
 
 ---
