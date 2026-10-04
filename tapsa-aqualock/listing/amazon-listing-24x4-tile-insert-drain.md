@@ -18,15 +18,22 @@ Rebuilt from the reference `Tapsa 24x4" Marble/Tile Insert Invisible Shower Floo
 
 ---
 
-## 2. Item Highlights, v3 (124 / 125)
+## 2. Item Highlights, v4: search-term led (123 / 125)
 
 ```
-Anti Cockroach & Odour Water Seal Trap, Reversible Matte Steel Cover, Fits 10-21mm Granite, End Outlet, Linear Bathroom Jali
+Anti Cockroach Trap, Anti Smell Water Seal, Stainless Steel Bathroom Jali, Linear Hidden Granite Cover, 10-21mm, End Outlet
 ```
 
-- **Insert thickness:** the brand confirmed 10 to 21 mm. The range is written as `10-21mm` because it answers every thickness question; the lightly searched `12mm` and `13mm` go to the backend.
-- **Outlet:** the outlet is a vertical bottom outlet near one end of the channel, not in the centre. It is called an "End Outlet", not a "Side Outlet": in plumbing, "side outlet" means a horizontal outlet through the channel wall, and buyers who want that would return this drain.
-- **Image 2 must change:** it still says "20 MM TILE-INSERT TRAY DEPTH". Change it to the 10 to 21 mm insert range so the image and the copy agree.
+Built from buyer search phrases on Amazon.in, with no word repeated from the title:
+- anti cockroach trap
+- anti smell / water seal
+- stainless steel jali / bathroom jali
+- linear drain
+- hidden / granite cover
+- 21mm
+- end outlet
+
+`odour`, `reversible` and `matte` moved to the backend search terms. Image 2 must show the 10 to 21 mm insert range, not "20 MM TRAY DEPTH".
 
 ---
 
@@ -127,10 +134,10 @@ TAPSA Luxury Bathing. Where perfection begins.
 
 ---
 
-## 6. Backend search terms, v3 (213 / 250 bytes)
+## 6. Backend search terms, v4 (213 / 250 bytes)
 
 ```
-stainless inch hidden concealed seamless jaali nahani nali insect odor smell kota stone 12mm 13mm slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
+inch concealed seamless jaali nahani nali insect odour odor reversible matte kota stone 12mm 13mm slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
 ```
 
 ---
