@@ -18,23 +18,15 @@ Rebuilt from the reference `Tapsa 24x4" Marble/Tile Insert Invisible Shower Floo
 
 ---
 
-## 2. Item Highlights, v2 (122 / 125)
+## 2. Item Highlights, v3 (124 / 125)
 
 ```
-Anti Cockroach & Odour Water Seal Trap, Reversible Matte Steel Cover, Fits 13mm Tile or 21mm Granite, Linear Bathroom Jali
+Anti Cockroach & Odour Water Seal Trap, Reversible Matte Steel Cover, Fits 10-21mm Granite, End Outlet, Linear Bathroom Jali
 ```
 
-Fallback if the 13 mm / 21 mm fit is not confirmed (116 / 125):
-
-```
-Anti Cockroach & Odour Water Seal Trap, Reversible Matte Steel Cover, Linear Bathroom Jali, 600x100 mm, 75 mm Outlet
-```
-
-The reference highlight (178 chars) would be cut off at 125. It also repeated marble, invisible and floor drain from the title.
-
-**Confirm before publishing:**
-- 21 mm marble does not fit the 20 mm insert-tray depth in the spec sheet. Either the tray is deeper or the figure is wrong.
-- "Side Hole" was left out because its meaning is unclear (side outlet, or the trap's side openings).
+- **Insert thickness:** the brand confirmed 10 to 21 mm. The range is written as `10-21mm` because it answers every thickness question; the lightly searched `12mm` and `13mm` go to the backend.
+- **Outlet:** the outlet is a vertical bottom outlet near one end of the channel, not in the centre. It is called an "End Outlet", not a "Side Outlet": in plumbing, "side outlet" means a horizontal outlet through the channel wall, and buyers who want that would return this drain.
+- **Image 2 must change:** it still says "20 MM TILE-INSERT TRAY DEPTH". Change it to the 10 to 21 mm insert range so the image and the copy agree.
 
 ---
 
@@ -58,10 +50,10 @@ AquaLock Water Seal for a Fresh Smelling Bathroom: Water passes through the slot
 Solid 304 Stainless Steel in Every Part: The channel, reversible cover, strainer, inner bowl and outer trap body are all made from AISI 304 grade stainless steel (SS304), the grade widely used for kitchen and food processing equipment. Built from solid 1 mm thick sheet for a sturdy, rigid feel underfoot, 304 grade steel resists rust and corrosion in daily wet use far better than iron, plastic or lower grade 201 steel. Every edge is folded and deburred, with no sharp edges to cut hands while cleaning, and the premium matte finish helps hide water spots and fingerprints
 ```
 
-**Bullet 4 (513 chars)**
+**Bullet 4 (555 chars)**
 
 ```
-Exact Dimensions for Easy Fitting: Nominal size 24 x 4 inch, actual outer size 600 x 100 mm. Tile insert area 585 x 85 mm with a 20 mm deep tray, which suits most standard floor tiles laid with adhesive; for thick marble or granite, make sure stone plus adhesive stays within 20 mm. Drain channel depth 32 mm, total height including trap 85 mm, and a 75 mm outlet near one end. Share these figures with your plumber or tiler before the floor bed is laid to confirm outlet position, pipe connection and floor depth
+Exact Dimensions and End Outlet for Easy Fitting: Nominal size 24 x 4 inch, actual outer size 600 x 100 mm. The 585 x 85 mm insert tray takes tile, marble or granite from 10 mm to 21 mm thick, so it suits standard 12 mm floor tiles and 21 mm stone alike. The 75 mm bottom outlet sits near one end instead of the centre, so you can turn the channel to place the outlet left or right over your existing pipe. Drain channel depth 32 mm, total height including trap 85 mm. Confirm outlet position and floor depth with your plumber before the floor bed is laid
 ```
 
 **Bullet 5 (512 chars)**
@@ -88,7 +80,7 @@ Optional, only with a test report on file. Add this to bullet 2: `Tested flow of
 
 ## 4. Product description
 
-(1864 / 2,000 characters)
+(1934 / 2,000 characters)
 
 ```
 Make your bathroom floor look as considered as the rest of your home. The TAPSA tile insert linear floor drain lets you set your own tile, marble or granite into the cover, so the drain blends into the floor and only a slim stainless steel line remains. For a modern metal look, flip the reversible 2-in-1 cover for a brushed matte stainless steel surface.
@@ -103,14 +95,14 @@ Specifications
 Nominal size: 24 x 4 inch
 Actual outer size: 600 x 100 mm
 Insert area: 585 x 85 mm
-Insert tray depth: 20 mm
+Insert thickness: 10 to 21 mm tile, marble or granite
 Channel depth: 32 mm
 Total height including trap: 85 mm
-Outlet: 75 mm, near one end
+Outlet: 75 mm bottom outlet near one end; turn the channel to place it left or right
 In the box: channel, reversible cover, slotted strainer, inner bowl, outer trap body (tile not included)
 
 Fitting tips
-Confirm outlet position, pipe connection and floor depth with your plumber before the floor bed is laid. Keep tile plus adhesive within the 20 mm tray, slope the floor gently towards the drain, and never grout the cover shut.
+Confirm outlet position, pipe connection and floor depth with your plumber before the floor bed is laid. Use 10 to 21 mm tile or stone, slope the floor gently towards the drain, and never grout the cover shut.
 
 Easy care
 Lift the cover, remove the strainer and inner bowl, rinse and refit. Use mild soap and water; avoid acid cleaners.
@@ -129,16 +121,16 @@ TAPSA Luxury Bathing. Where perfection begins.
 | 2 | Comparison, 2 images | One Drain. Two Distinctive Looks. | Left: tile/marble insert, a near-invisible finish. Right: flip the cover for brushed matte stainless steel. | The same unit from the same angle; 180° flip icon between the two views | Reversible 2-in-1 floor drain cover, tile insert side and matte stainless steel side |
 | 3 | Technology | AquaLock Water Seal. No Moving Parts. | Water enters through the strainer, flows beneath the inner cup and exits through the side openings. The water that stays behind forms the seal against odour and insects. No spring, hinge or flap. | The existing 3-step cutaway. Fix the typo "THRROUGH" | AquaLock water seal trap cutaway showing retained water blocking drain odour |
 | 4 | Material, 3 tiles | 304 Stainless Steel, Inside and Out | Every component in AISI 304 grade steel · 1 mm solid sheet · folded, deburred edges | Macro of the edge, the brushed grain and the five parts | SS304 stainless steel floor drain parts with 1 mm sheet and smooth deburred edges |
-| 5 | Fit chart | Check Your Fit Before You Tile | 600 x 100 mm outer · 585 x 85 mm insert · 20 mm tray · 32 mm channel · 85 mm total height · 75 mm outlet | A clean dimension drawing (the existing image 2, typo fixed) | 24 x 4 inch floor drain dimension drawing 600 x 100 mm with 75 mm outlet |
+| 5 | Fit chart | Check Your Fit Before You Tile | 600 x 100 mm outer · 585 x 85 mm insert for 10 to 21 mm tile or stone · 32 mm channel · 85 mm total height · 75 mm end outlet | A clean dimension drawing (the existing image 2, typo fixed) | 24 x 4 inch floor drain dimension drawing 600 x 100 mm with 75 mm outlet |
 | 6 | Care | Lift. Rinse. Refit. | Hair stays in the strainer, not your pipe. Mild soap and water only, no acid cleaners. Top up the seal if the bathroom is rarely used. | Three-step photo strip: hands lifting, rinsing, refitting | Removable slotted strainer and trap lifted out of linear floor drain for cleaning |
 | 7 | Brand close | TAPSA Luxury Bathing — Where Perfection Begins | 5-piece set · Lifetime limited replacement warranty on the drain channel | What's in the box: five numbered parts, with the brand mark | TAPSA 5 piece linear drain set: channel, cover, strainer, inner bowl, trap body |
 
 ---
 
-## 6. Backend search terms, v2 (203 / 250 bytes)
+## 6. Backend search terms, v3 (213 / 250 bytes)
 
 ```
-stainless inch hidden concealed seamless jaali nahani nali insect odor smell kota stone slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
+stainless inch hidden concealed seamless jaali nahani nali insect odor smell kota stone 12mm 13mm slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
 ```
 
 ---
