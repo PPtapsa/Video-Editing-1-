@@ -5,31 +5,36 @@ Character counts were checked with a script (spaces included).
 
 ---
 
-## 1. Product title (74 / 75)
+## 1. Product title, v2 (72 / 75)
 
 ```
-TAPSA Tile Insert Linear Floor Drain Channel 24 Inch SS304 Bathroom Shower
+Tapsa 24x4 Marble/Tile Insert Invisible Shower Floor Drain Channel SS304
 ```
 
-Backup, easier to read (72 / 75):
-
-```
-TAPSA Tile Insert Linear Floor Drain Channel for Bathroom, 24 Inch SS304
-```
-
-The title must be **under** 75 characters for Item Highlights to show, so both versions stay at 74 or below.
-
-Search terms in the title: linear floor drain, tile insert floor drain, floor drain channel / shower channel, 24 inch floor drain, SS304 floor drain, bathroom floor drain, shower drain. No word appears more than twice, and the title uses no restricted characters.
+Rebuilt from the reference `Tapsa 24x4" Marble/Tile Insert Invisible Shower Floor Drain Channel SS-304` (74):
+- The `"` inch mark is removed. Feeds and CSV files can strip or break on it, and it doesn't match buyers searching "inch".
+- `SS-304` becomes `SS304`, the form buyers type and the form used in the rest of the listing.
+- The brand spelling must match Brand Registry exactly ("Tapsa" or "TAPSA").
 
 ---
 
-## 2. Item Highlights (120 / 125)
+## 2. Item Highlights, v2 (122 / 125)
 
 ```
-Reversible Marble or Matte Stainless Steel Cover, Invisible Look, Anti-Odour Water Seal Trap, 600 x 100 mm, 75 mm Outlet
+Anti Cockroach & Odour Water Seal Trap, Reversible Matte Steel Cover, Fits 13mm Tile or 21mm Granite, Linear Bathroom Jali
 ```
 
-None of the title's words are repeated. This field adds new search words: reversible, marble, matte, stainless steel, invisible, anti-odour, water seal trap, cover, 600 x 100 mm and 75 mm outlet.
+Fallback if the 13 mm / 21 mm fit is not confirmed (116 / 125):
+
+```
+Anti Cockroach & Odour Water Seal Trap, Reversible Matte Steel Cover, Linear Bathroom Jali, 600x100 mm, 75 mm Outlet
+```
+
+The reference highlight (178 chars) would be cut off at 125. It also repeated marble, invisible and floor drain from the title.
+
+**Confirm before publishing:**
+- 21 mm marble does not fit the 20 mm insert-tray depth in the spec sheet. Either the tray is deeper or the figure is wrong.
+- "Side Hole" was left out because its meaning is unclear (side outlet, or the trap's side openings).
 
 ---
 
@@ -130,10 +135,10 @@ TAPSA Luxury Bathing. Where perfection begins.
 
 ---
 
-## 6. Backend search terms (196 / 250 bytes)
+## 6. Backend search terms, v2 (203 / 250 bytes)
 
 ```
-jali jaali nahani nali cockroach insect odor smell granite concealed seamless slot grate grating gutter strip wetroom wet room balcony terrace 60cm 2ft feet long 4in 24in brushed silver heavy duty
+stainless inch hidden concealed seamless jaali nahani nali insect odor smell kota stone slot grate grating gutter strip wetroom wet room balcony terrace 600mm 60cm 2ft feet long brushed silver heavy duty
 ```
 
 ---
