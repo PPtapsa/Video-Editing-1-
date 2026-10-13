@@ -81,6 +81,7 @@ function renderTopbar() {
       h('button', { class: 'btn btn-primary', type: 'button', title: 'Save (Ctrl/Cmd+S)', onClick: () => saveNow(true) }, icon('save', 14), 'Save'),
       h('button', { class: 'btn', type: 'button', onClick: saveAsCopy }, icon('dup', 14), 'Save as copy'),
       h('button', { class: 'btn', type: 'button', onClick: openSavedDrawer }, icon('folder', 14), 'Saved Listings'),
+      h('button', { class: 'btn', type: 'button', title: 'Excel import / export', onClick: openExcelModal }, icon('doc', 14), 'Excel'),
       iconBtn(themeIcon, 'Theme: ' + S.theme + ' (click to change)', cycleTheme)));
   updateSaveInd();
 }

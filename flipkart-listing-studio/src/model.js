@@ -104,7 +104,7 @@ function metaOf(l) {
   return {
     name: l.name || 'Untitled listing', brand: l.brand, category: l.category,
     variantCount: l.variants.length, completion: completionPct(l), createdAt: l.createdAt, updatedAt: l.updatedAt,
-    modelNumber: l.fields.modelNumber || ''
+    modelNumber: l.fields.modelNumber || '', sku: l.fields.sku || ''
   };
 }
 function listingForSave(l) {

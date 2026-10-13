@@ -9,6 +9,7 @@ Single-page tool for building, scoring, storing and copying Flipkart Seller Hub 
   volumetric weight, Smart Title Case, n-gram density, case-preserving token replacement, 80-char Type cap,
   keyword bank, paste-back parser)
 - `test/smoke.mjs`, `test/smoke2.mjs` — Playwright smoke tests against `test/harness.html`
+- `test/roundtrip.mjs` — Excel export → re-import round trip (faucet master + 2 variants), workbook format checks, hand-edited sheet preview
 
 ```
 node build.mjs

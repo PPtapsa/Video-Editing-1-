@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const src = (f) => readFileSync(join(here, 'src', f), 'utf8');
-const order = ['logic.js', 'defaults.js', 'ui.js', 'store.js', 'model.js', 'fields.js', 'app.js', 'tab-basic.js', 'tab-lab.js', 'tab-ai.js', 'tab-variants.js', 'catbuilder.js'];
+const order = ['logic.js', 'defaults.js', 'ui.js', 'store.js', 'model.js', 'fields.js', 'app.js', 'tab-basic.js', 'tab-lab.js', 'tab-ai.js', 'tab-variants.js', 'catbuilder.js', 'excel.js'];
 const js = order.map((f) => '/* ---- ' + f + ' ---- */\n' + src(f).replace(/^if \(typeof module.*$/m, '')).join('\n');
 const page = src('page.html').replace('/*__CSS__*/', () => src('styles.css')).replace('/*__JS__*/', () => js);
 mkdirSync(join(here, 'dist'), { recursive: true });

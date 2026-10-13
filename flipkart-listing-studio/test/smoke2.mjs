@@ -11,7 +11,7 @@ page.on('pageerror', (e) => errors.push('pageerror: ' + e.message + ' ' + (e.sta
 page.on('console', (m) => { if (m.type() === 'error' && !/fonts\.g|net::ERR/.test(m.text())) errors.push('console: ' + m.text()); });
 page.setDefaultTimeout(6000);
 const step = async (n, fn) => { try { await fn(); console.log('ok', n); } catch (e) { errors.push('STEP ' + n + ': ' + e.message.split('\n').slice(0, 2).join(' | ')); } };
-await page.route('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', (r) => r.fulfill({ path: SP + '/xlsxpkg/package/dist/xlsx.full.min.js', contentType: 'application/javascript' }));
+await page.route('https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js', (r) => r.fulfill({ path: SP + '/xjs/package/dist/xlsx.bundle.js', contentType: 'application/javascript' }));
 await page.goto(url); await page.waitForTimeout(600);
 await step('new listing drain', async () => {
   await page.click('button:has-text("New")');

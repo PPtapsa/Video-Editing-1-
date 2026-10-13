@@ -148,6 +148,12 @@ eq('match options', L.matchOptions(['basin mixer', 'Wall Mount'], ['Basin Mixer'
 eq('sku join', L.joinSku([{ value: 'T' }, { value: ' SSM ' }, { value: '' }, { value: 'PC-1' }]), 'T-SSM-PC-1');
 eq('date fmt', L.fmtDateTime(new Date(2026, 9, 13, 0, 28).getTime()), '13 Oct 2026, 12:28 AM');
 eq('date fmt pm', L.fmtDateTime(new Date(2026, 9, 13, 15, 5).getTime()), '13 Oct 2026, 03:05 PM');
+const dts = new Date(2026, 9, 13, 8, 19).getTime();
+eq('date parse', L.parseDateTime('13 Oct 2026, 08:19 AM'), dts);
+eq('date parse pm', L.parseDateTime('13 Oct 2026, 03:05 PM'), new Date(2026, 9, 13, 15, 5).getTime());
+eq('date parse midnight', L.parseDateTime('13 Oct 2026, 12:28 AM'), new Date(2026, 9, 13, 0, 28).getTime());
+eq('date round trip', L.parseDateTime(L.fmtDateTime(dts)), dts);
+eq('date parse bad', L.parseDateTime('yesterday'), null);
 eq('diff', L.diffWords('a b c', 'a x c').map((d) => d.type), ['eq', 'del', 'ins', 'eq']);
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -557,6 +557,17 @@ const Logic = (function () {
     h = h % 12; if (h === 0) h = 12;
     return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear() + ', ' + String(h).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ' ' + ap;
   }
+  // "13 Oct 2026, 08:19 AM" -> timestamp (local time); null when it does not parse
+  function parseDateTime(s) {
+    const m = String(s || '').trim().match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4}),?\s+(\d{1,2}):(\d{2})\s*([AaPp][Mm])$/);
+    if (!m) return null;
+    const mon = MONTHS.findIndex((x) => x.toLowerCase() === m[2].toLowerCase());
+    if (mon < 0) return null;
+    let hh = Number(m[4]) % 12;
+    if (/p/i.test(m[6])) hh += 12;
+    const d = new Date(Number(m[3]), mon, Number(m[1]), hh, Number(m[5]));
+    return isNaN(d.getTime()) ? null : d.getTime();
+  }
   function fmtClock(ts) {
     const d = new Date(ts);
     return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
@@ -571,7 +582,7 @@ const Logic = (function () {
     makeReplacer, preserveCase, deriveForm, diffWords,
     CLUSTERS, classifyTerm, analyzeKeywords, cleanKeyword, stemSet, coverage,
     parsePasteBack, matchOptions, splitList, dedupeCI,
-    joinSku, fmtDateTime, fmtClock
+    joinSku, fmtDateTime, fmtClock, parseDateTime
   };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = Logic;

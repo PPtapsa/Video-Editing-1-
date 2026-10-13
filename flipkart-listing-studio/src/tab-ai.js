@@ -1,7 +1,8 @@
 /* ==========================================================================
    🤖 AI Research — keyword Excel → bank + coverage, competitor brief, paste-back importer
    ========================================================================== */
-const XLSX_URL = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+// SheetJS 0.18.5 with cell styling (bold/fill on export); also reads .xlsx/.xls/.csv keyword files
+const XLSX_URL = 'https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js';
 let xlsxPromise = null;
 function loadXlsx() {
   if (window.XLSX) return Promise.resolve(window.XLSX);
